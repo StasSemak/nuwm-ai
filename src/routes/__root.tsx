@@ -1,4 +1,5 @@
-import { createRootRoute, Link, Outlet } from "@tanstack/react-router";
+import { createRootRoute, Outlet } from "@tanstack/react-router";
+import { Header } from "../components/layout/header";
 
 export const Route = createRootRoute({
   component: RootLayout,
@@ -7,11 +8,10 @@ export const Route = createRootRoute({
 function RootLayout() {
   return (
     <>
-      <nav className="flex gap-3">
-        <Link to="/">Home</Link>
-        <Link to="/sign-in">Sign-in</Link>
-      </nav>
-      <Outlet />
+      <Header />
+      <main className="flex-grow w-full max-w-[1240px] mx-auto py-2 px-12">
+        <Outlet />
+      </main>
     </>
   );
 }
