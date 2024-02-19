@@ -3,7 +3,8 @@ import { Button } from "./button";
 import { Input } from "./input";
 import { useMutation } from "@tanstack/react-query";
 import { http } from "../lib/http";
-import { AlertCircle, Loader2 } from "lucide-react";
+import { LoadingSpinner } from "./loading-spinner";
+import { ErrorMessage } from "./error-message";
 
 type ChatQuestion = {
   question: string;
@@ -82,24 +83,6 @@ function ResponseView(props: ResponseViewProps) {
   }
 
   return <div></div>;
-}
-
-function LoadingSpinner() {
-  return (
-    <div className="flex-grow flex flex-col items-center justify-center">
-      <Loader2 className="stroke-main h-12 w-12 animate-spin" />
-    </div>
-  );
-}
-function ErrorMessage() {
-  return (
-    <div className="flex-grow flex flex-col justify-center items-center">
-      <div className="flex gap-2 items-center">
-        <AlertCircle className="h-8 w-8 stroke-main" />
-        <p className="text-main text-xl">Виникла помилка</p>
-      </div>
-    </div>
-  );
 }
 
 function Response({ data }: { data: ChatResponse | undefined }) {
