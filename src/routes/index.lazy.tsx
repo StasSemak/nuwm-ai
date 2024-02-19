@@ -1,4 +1,5 @@
 import { createLazyFileRoute } from "@tanstack/react-router";
+import { ChatForm } from "../components/chat-form";
 
 export const Route = createLazyFileRoute("/")({
   component: Index,
@@ -6,8 +7,8 @@ export const Route = createLazyFileRoute("/")({
 
 function Index() {
   return (
-    <div className="p-2">
-      <h3>Index page</h3>
+    <div className="p-2 flex flex-col items-center bg-zinc-100 rounded-md min-h-[50vh]">
+      <ChatForm/>
     </div>
   );
 }
