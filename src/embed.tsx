@@ -1,5 +1,5 @@
 import ReactDOM from "react-dom/client";
-import "./styles/index.css";
+import "./styles/embed.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Embed } from "./routes/embed";
 
