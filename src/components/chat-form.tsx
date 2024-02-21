@@ -5,6 +5,7 @@ import { useMutation } from "@tanstack/react-query";
 import { http } from "../lib/http";
 import { LoadingSpinner } from "./loading-spinner";
 import { ErrorMessage } from "./error-message";
+import { ArrowUp } from "lucide-react";
 
 type ChatQuestion = {
   question: string;
@@ -42,20 +43,23 @@ export function ChatForm() {
           onChange={(e) => {
             setChatQuestion({ ...chatQuestion, question: e.target.value });
           }}
+          aria-label="Запитання"
         />
         <Button
           type="submit"
           disabled={chatQuestion.question === ""}
-          className="disabled:select-none"
+          className="disabled:select-none px-3 md:px-4"
+          aria-label="Запитати"
         >
-          Запитати
+          <span className="hidden md:block">Запитати</span>
+          <ArrowUp className="stroke-zinc-100 size-5 block md:hidden"/>
         </Button>
       </form>
       <div className="flex-grow w-full flex">
         <ResponseView
           isPending={isPending}
           isError={isError}
-          isSuccess={isSuccess}
+          isSuccess={true}
           data={data}
         />
       </div>
@@ -86,11 +90,15 @@ function ResponseView(props: ResponseViewProps) {
 }
 
 function Response({ data }: { data: ChatResponse | undefined }) {
-  if (!data || data.error) return <ErrorMessage />;
+  //if (!data || data.error) return <ErrorMessage />;
+
+  const lorem = "Lorem ipsum dolor sit amet consectetur adipisicing elit. Iste aliquid adipisci neque reiciendis, voluptatibus id voluptate ex atque totam velit reprehenderit ab dolorum, odio debitis! Magni hic dolore nemo nihil!"
+  const test = lorem + " " + lorem + " " + lorem + " " + lorem + " " + lorem + " " + 
+    lorem + " " + lorem; 
 
   return (
     <div className="flex-grow flex flex-col px-2 py-4">
-      <p className="text-zinc-950">{data.data}</p>
+      <p className="text-zinc-950">{test}</p>
     </div>
   );
 }
