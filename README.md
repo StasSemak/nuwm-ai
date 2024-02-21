@@ -1,4 +1,4 @@
-App need envirovment valriables to be set up, as in `.env.example`:
+App need envirovment valriables to be set up in `.env` file, as in `.env.example`:
 - `VITE_BACKEND_URL` - path to the backend server
 - `VITE_AUTH_TOKEN` - Bearer auth token
 
