@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { Button } from "./button";
-import { Input } from "./input";
 import { useMutation } from "@tanstack/react-query";
 import { http } from "../lib/http";
 import { LoadingSpinner } from "./loading-spinner";
 import { ErrorMessage } from "./error-message";
 import { ArrowUp } from "lucide-react";
+import { TextArea } from "./textarea";
 
 type ChatQuestion = {
   question: string;
@@ -37,7 +37,7 @@ export function ChatForm() {
   return (
     <div className="flex flex-col p-2 w-full items-center flex-grow">
       <form className="flex gap-2 w-full" onSubmit={onSubmit}>
-        <Input
+        <TextArea
           placeholder="Введіть ваше запитання"
           name="question"
           onChange={(e) => {
@@ -59,7 +59,7 @@ export function ChatForm() {
         <ResponseView
           isPending={isPending}
           isError={isError}
-          isSuccess={true}
+          isSuccess={isSuccess}
           data={data}
         />
       </div>
@@ -90,15 +90,11 @@ function ResponseView(props: ResponseViewProps) {
 }
 
 function Response({ data }: { data: ChatResponse | undefined }) {
-  //if (!data || data.error) return <ErrorMessage />;
-
-  const lorem = "Lorem ipsum dolor sit amet consectetur adipisicing elit. Iste aliquid adipisci neque reiciendis, voluptatibus id voluptate ex atque totam velit reprehenderit ab dolorum, odio debitis! Magni hic dolore nemo nihil!"
-  const test = lorem + " " + lorem + " " + lorem + " " + lorem + " " + lorem + " " + 
-    lorem + " " + lorem; 
+  if (!data || data.error) return <ErrorMessage />;
 
   return (
     <div className="flex-grow flex flex-col px-2 py-4">
-      <p className="text-zinc-950">{test}</p>
+      <p className="text-zinc-950">{data.data}</p>
     </div>
   );
 }
