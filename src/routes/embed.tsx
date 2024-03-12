@@ -1,4 +1,4 @@
-import { ChatForm } from "../components/chat-form";
+import { ChatForm } from "../components/embed/chat-form";
 
 export function Embed() {
   return (

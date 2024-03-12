@@ -1,4 +1,4 @@
-import { FilesList } from "../components/files-list";
+import { FilesList } from "../components/admin/files-list";
 
 export function Admin() {
   return (

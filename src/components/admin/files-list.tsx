@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
-import { http } from "../lib/http";
-import { LoadingSpinner } from "./loading-spinner";
-import { ErrorMessage } from "./error-message";
-import { formatDate } from "../lib/utils";
+import { http } from "../../lib/http";
+import { LoadingSpinner } from "../ui/loading-spinner";
+import { ErrorMessage } from "../ui/error-message";
+import { formatDate } from "../../lib/utils";
 import { Trash } from "lucide-react";
 
 type FileItem = {
