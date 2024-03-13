@@ -17,6 +17,15 @@ type FilesListResponse = {
 };
 
 export function FilesList() {
+  return (
+    <div className="flex flex-col gap-4 w-full">
+      <h2 className="text-2xl text-zinc-950 mb-1">Список файлів</h2>
+      <List />
+    </div>
+  );
+}
+
+function List() {
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["get-all-files"],
     queryFn: async () => {
@@ -30,7 +39,6 @@ export function FilesList() {
 
   return (
     <div className="flex flex-col gap-3 w-full">
-      <h2 className="text-2xl text-zinc-950 mb-1">Список файлів</h2>
       {data.data.map((item) => (
         <FileCard key={item.id} file={item} refetch={refetch} />
       ))}
@@ -38,7 +46,7 @@ export function FilesList() {
   );
 }
 
-export function FileCard({ file, refetch }: { file: FileItem, refetch: any }) {
+export function FileCard({ file, refetch }: { file: FileItem; refetch: any }) {
   return (
     <div className="flex items-center px-3 justify-between rounded-md h-14 bg-zinc-100">
       <div className="flex gap-2">
@@ -50,7 +58,15 @@ export function FileCard({ file, refetch }: { file: FileItem, refetch: any }) {
   );
 }
 
-function DeleteButton({ id, name, refetch }: { id: number, name: string, refetch: any }) {
+function DeleteButton({
+  id,
+  name,
+  refetch,
+}: {
+  id: number;
+  name: string;
+  refetch: any;
+}) {
   function deleteHandler() {
     if (
       !confirm(
