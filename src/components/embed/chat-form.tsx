@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { Button } from "./button";
+import { Button } from "../ui/button";
 import { useMutation } from "@tanstack/react-query";
-import { http } from "../lib/http";
-import { LoadingSpinner } from "./loading-spinner";
-import { ErrorMessage } from "./error-message";
+import { http } from "../../lib/http";
+import { LoadingSpinner } from "../ui/loading-spinner";
+import { ErrorMessage } from "../ui/error-message";
 import { ArrowUp } from "lucide-react";
-import { TextArea } from "./textarea";
+import { TextArea } from "../ui/textarea";
 import { CopyButton } from "./copy-button";
 
 type ChatQuestion = {
