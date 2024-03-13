@@ -17,7 +17,7 @@ type FilesListResponse = {
 };
 
 export function FilesList() {
-  const { data, isLoading, isError } = useQuery({
+  const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["get-all-files"],
     queryFn: async () => {
       const { data } = await http.get<FilesListResponse>("/files");
@@ -32,25 +32,25 @@ export function FilesList() {
     <div className="flex flex-col gap-3 w-full">
       <h2 className="text-2xl text-zinc-950 mb-1">Список файлів</h2>
       {data.data.map((item) => (
-        <FileCard key={item.id} file={item} />
+        <FileCard key={item.id} file={item} refetch={refetch} />
       ))}
     </div>
   );
 }
 
-export function FileCard({ file }: { file: FileItem }) {
+export function FileCard({ file, refetch }: { file: FileItem, refetch: any }) {
   return (
     <div className="flex items-center px-3 justify-between rounded-md h-14 bg-zinc-100">
       <div className="flex gap-2">
         <p className="text-zinc-950 font-bold">{file.name}</p>
         <p className="text-sm mt-0.5">{formatDate(file.createdAt)}</p>
       </div>
-      <DeleteButton id={file.id} name={file.name} />
+      <DeleteButton id={file.id} name={file.name} refetch={refetch} />
     </div>
   );
 }
 
-function DeleteButton({ id, name }: { id: number; name: string }) {
+function DeleteButton({ id, name, refetch }: { id: number, name: string, refetch: any }) {
   function deleteHandler() {
     if (
       !confirm(
@@ -64,6 +64,7 @@ function DeleteButton({ id, name }: { id: number; name: string }) {
       .delete(`/files/${id}`)
       .then(() => {
         alert("Операція успішна!");
+        refetch();
       })
       .catch(() => {
         alert("Виникла помилка! Спробуйте ще раз");
