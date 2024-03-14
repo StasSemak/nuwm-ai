@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "../ui/button";
 import { useMutation } from "@tanstack/react-query";
 import { http } from "../../lib/http";
@@ -16,11 +16,17 @@ type ChatResponse = {
   message: string;
   data: string;
 };
+type ChatMessage = {
+  from: "user" | "server";
+  data: string;
+};
 
 export function ChatForm() {
   const [chatQuestion, setChatQuestion] = useState<ChatQuestion>({
     question: "",
   });
+  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
 
   const { mutate, isPending, isError, isSuccess, data } = useMutation({
     mutationKey: ["answer"],
@@ -32,8 +38,15 @@ export function ChatForm() {
 
   function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    setChatMessages((prev) => [
+      ...prev,
+      {
+        from: "user",
+        data: chatQuestion.question,
+      },
+    ]);
     mutate(chatQuestion);
-    setChatQuestion({question: ""})
+    if (inputRef.current) inputRef.current.value = "";
   }
 
   return (
@@ -46,6 +59,7 @@ export function ChatForm() {
             setChatQuestion({ ...chatQuestion, question: e.target.value });
           }}
           aria-label="Запитання"
+          ref={inputRef}
         />
         <Button
           type="submit"
@@ -54,18 +68,42 @@ export function ChatForm() {
           aria-label="Запитати"
         >
           <span className="hidden md:block">Запитати</span>
-          <ArrowUp className="stroke-zinc-100 size-5 block md:hidden"/>
+          <ArrowUp className="stroke-zinc-100 size-5 block md:hidden" />
         </Button>
       </form>
-      <div className="flex-grow w-full flex">
+      <div className="flex-grow w-full flex flex-col gap-5 mt-5">
+        <ChatView chatMessages={chatMessages} />
         <ResponseView
           isPending={isPending}
           isError={isError}
           isSuccess={isSuccess}
           data={data}
-          question={chatQuestion.question}
+          setChatMessages={setChatMessages}
         />
       </div>
+    </div>
+  );
+}
+
+function ChatView({ chatMessages }: { chatMessages: ChatMessage[] }) {
+  return (
+    <div className="flex flex-col gap-5 w-full">
+      {chatMessages.map((item, index) => (
+        <ChatItem key={index} message={item} />
+      ))}
+    </div>
+  );
+}
+function ChatItem({ message }: { message: ChatMessage }) {
+  return (
+    <div className="flex flex-col gap-1 w-full">
+      <div className="w-full flex justify-between items-center">
+        <p className="text-zinc-950 font-bold">
+          {message.from === "user" ? "Ви" : "Відповідь"}
+        </p>
+        {message.from === "server" && <CopyButton text={message.data}/>}
+      </div>
+      <p className="text-zinc-950">{message.data}</p>
     </div>
   );
 }
@@ -75,9 +113,24 @@ type ResponseViewProps = {
   isError: boolean;
   isSuccess: boolean;
   data: ChatResponse | undefined;
-  question: string | undefined;
+  setChatMessages: React.Dispatch<React.SetStateAction<ChatMessage[]>>;
 };
 function ResponseView(props: ResponseViewProps) {
+  useEffect(() => {
+    if (props.isSuccess) {
+      const { data } = props;
+      if (!data || data.error) return;
+
+      props.setChatMessages((prev) => [
+        ...prev,
+        {
+          from: "server",
+          data: data.data,
+        },
+      ]);
+    }
+  }, [props.isSuccess, props.data, props.setChatMessages]);
+
   if (props.isPending) {
     return <LoadingSpinner />;
   }
@@ -85,24 +138,5 @@ function ResponseView(props: ResponseViewProps) {
   if (props.isError) {
     return <ErrorMessage />;
   }
-
-  if (props.isSuccess) {
-    return <Response data={props.data} question={props.question} />;
-  }
-
-  return <div></div>;
-}
-
-function Response({ data, question }: { data: ChatResponse | undefined, question: string | undefined }) {
-  if (!data || data.error) return <ErrorMessage />;
-
-  return (
-    <div className="flex-grow flex flex-col gap-3 px-2 py-4">
-      <div className="w-full flex justify-between items-center gap-5">
-        <p className="text-zinc-950 font-bold">{question}</p>
-        <CopyButton text={data.data}/>
-      </div>
-      <p className="text-zinc-950">{data.data}</p>
-    </div>
-  );
+  return null;
 }
