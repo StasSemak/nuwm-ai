@@ -6,6 +6,7 @@ import { LoadingSpinner } from "../ui/loading-spinner";
 import { ErrorMessage } from "../ui/error-message";
 import { ArrowUp } from "lucide-react";
 import { TextArea } from "../ui/textarea";
+import { CopyButton } from "./copy-button";
 
 type ChatQuestion = {
   question: string;
@@ -96,9 +97,12 @@ function ChatView({ chatMessages }: { chatMessages: ChatMessage[] }) {
 function ChatItem({ message }: { message: ChatMessage }) {
   return (
     <div className="flex flex-col gap-1 w-full">
-      <p className="text-zinc-950 font-bold">
-        {message.from === "user" ? "Ви" : "Відповідь"}
-      </p>
+      <div className="w-full flex justify-between items-center">
+        <p className="text-zinc-950 font-bold">
+          {message.from === "user" ? "Ви" : "Відповідь"}
+        </p>
+        {message.from === "server" && <CopyButton text={message.data}/>}
+      </div>
       <p className="text-zinc-950">{message.data}</p>
     </div>
   );
