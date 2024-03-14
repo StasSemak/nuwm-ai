@@ -63,7 +63,6 @@ export function ChatForm() {
           isError={isError}
           isSuccess={isSuccess}
           data={data}
-          question={chatQuestion.question}
         />
       </div>
     </div>
@@ -75,7 +74,6 @@ type ResponseViewProps = {
   isError: boolean;
   isSuccess: boolean;
   data: ChatResponse | undefined;
-  question: string | undefined;
 };
 function ResponseView(props: ResponseViewProps) {
   if (props.isPending) {
@@ -87,21 +85,17 @@ function ResponseView(props: ResponseViewProps) {
   }
 
   if (props.isSuccess) {
-    return <Response data={props.data} question={props.question} />;
+    return <Response data={props.data} />;
   }
 
   return <div></div>;
 }
 
-function Response({ data, question }: { data: ChatResponse | undefined, question: string | undefined }) {
+function Response({ data }: { data: ChatResponse | undefined }) {
   if (!data || data.error) return <ErrorMessage />;
 
   return (
     <div className="flex-grow flex flex-col gap-3 px-2 py-4">
-      <div className="w-full flex justify-between items-center gap-5">
-        <p className="text-zinc-950 font-bold">{question}</p>
-        <CopyButton text={data.data}/>
-      </div>
       <p className="text-zinc-950">{data.data}</p>
     </div>
   );
