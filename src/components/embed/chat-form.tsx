@@ -50,28 +50,30 @@ export function ChatForm() {
   }
 
   return (
-    <div className="flex flex-col p-2 w-full items-center flex-grow">
-      <form className="flex gap-2 w-full" onSubmit={onSubmit}>
-        <TextArea
-          placeholder="Введіть ваше запитання"
-          name="question"
-          onChange={(e) => {
-            setChatQuestion({ ...chatQuestion, question: e.target.value });
-          }}
-          aria-label="Запитання"
-          ref={inputRef}
-        />
-        <Button
-          type="submit"
-          disabled={chatQuestion.question === ""}
-          className="disabled:select-none px-3 md:px-4"
-          aria-label="Запитати"
-        >
-          <span className="hidden md:block">Запитати</span>
-          <ArrowUp className="stroke-zinc-100 size-5 block md:hidden" />
-        </Button>
-      </form>
-      <div className="flex-grow w-full flex flex-col gap-5 mt-5">
+    <div className="p-2 w-full items-center min-h-screen relative">
+      <div className="fixed pb-4 pt-1 bg-zinc-100 bottom-0 w-[calc(100%-16px)] mx-auto">
+        <form className="flex gap-2 w-full" onSubmit={onSubmit}>
+          <TextArea
+            placeholder="Введіть ваше запитання"
+            name="question"
+            onChange={(e) => {
+              setChatQuestion({ ...chatQuestion, question: e.target.value });
+            }}
+            aria-label="Запитання"
+            ref={inputRef}
+          />
+          <Button
+            type="submit"
+            disabled={chatQuestion.question === ""}
+            className="disabled:select-none px-3 md:px-4"
+            aria-label="Запитати"
+          >
+            <span className="hidden md:block">Запитати</span>
+            <ArrowUp className="stroke-zinc-100 size-5 block md:hidden" />
+          </Button>
+        </form>
+      </div>
+      <div className="h-full w-full flex flex-col gap-5 mt-5 mb-[70px]">
         <ChatView chatMessages={chatMessages} />
         <ResponseView
           isPending={isPending}
