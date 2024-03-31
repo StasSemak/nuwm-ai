@@ -7,6 +7,7 @@ import { ErrorMessage } from "../ui/error-message";
 import { ArrowUp } from "lucide-react";
 import { TextArea } from "../ui/textarea";
 import { CopyButton } from "./copy-button";
+import { MDXContent } from "../mdx";
 
 type ChatQuestion = {
   question: string;
@@ -105,7 +106,7 @@ function ChatItem({ message }: { message: ChatMessage }) {
         </p>
         {message.from === "server" && <CopyButton text={message.data}/>}
       </div>
-      <p className="text-zinc-950">{message.data}</p>
+      <MDXContent>{message.data}</MDXContent>
     </div>
   );
 }
