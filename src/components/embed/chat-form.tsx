@@ -8,9 +8,11 @@ import { ArrowUp } from "lucide-react";
 import { TextArea } from "../ui/textarea";
 import { CopyButton } from "./copy-button";
 import { MDXContent } from "../mdx";
+import { nanoid } from "nanoid";
 
 type ChatQuestion = {
   question: string;
+  chatId: string;
 };
 type ChatResponse = {
   error: boolean;
@@ -22,9 +24,12 @@ type ChatMessage = {
   data: string;
 };
 
+const chatId = nanoid();
+
 export function ChatForm() {
   const [chatQuestion, setChatQuestion] = useState<ChatQuestion>({
     question: "",
+    chatId,
   });
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   const inputRef = useRef<HTMLTextAreaElement>(null);
