@@ -4,8 +4,11 @@ import { LoadingSpinner } from "../ui/loading-spinner";
 import { ErrorMessage } from "../ui/error-message";
 import { Button } from "../ui/button";
 import { useState } from "react";
+import { User as UserIcon, Bot as BotIcon, XCircle, CheckCircle2 } from "lucide-react";
+import { formatDate } from "../../lib/utils";
+import { MDXContent } from "../mdx";
 
-const ITEMS_PER_PAGE = 50;
+const ITEMS_PER_PAGE = 30;
 
 type HistoryItem = {
     id: number;
@@ -56,7 +59,7 @@ function List() {
     const historyData = historyResponses.flatMap((item) => item.data);
 
     return(
-        <div className="flex flex-col gap-3 w-full">
+        <div className="flex flex-col gap-4 w-full">
             {historyData.map((item, index) => (
                 <ListItem key={`${index} ${item.id}`} {...item}/>
             ))}
@@ -90,6 +93,33 @@ function FetchStatusBar(props: FetchStatusBarProps) {
 
 function ListItem(props: HistoryItem) {
     return(
-        <div className=""></div>
+        <div className="w-full flex flex-col gap-2 bg-zinc-100 p-3 rounded-md">
+            <ListItemHeader {...props}/>
+            <MDXContent>{props.content}</MDXContent>
+        </div>
     )
+}
+
+type ListItemHeaderProps = Omit<HistoryItem, "content">
+function ListItemHeader(props: ListItemHeaderProps) {
+    return(
+        <div className="flex flex-row justify-between items-center">
+            <div className="flex flex-row gap-3">
+                <ListItemAuthorIcon role={props.role}/>
+                <span className="text-zinc-700 text-sm mt-0.5">Чат #{props.chatId}</span>
+            </div>
+            <div className="flex flex-row gap-3">
+                <ListItemStatusIcon isAnswered={props.isAnswered}/>
+                <span className="text-sm mt-0.5">{formatDate(props.createdAt)}</span>
+            </div>
+        </div>
+    )
+}
+function ListItemAuthorIcon({role}: {role: string}) {
+    if (role === "user") return <UserIcon className="size-5 stroke-main"/>
+    return <BotIcon className="size-5 stroke-main"/>
+}
+function ListItemStatusIcon({isAnswered}: {isAnswered: boolean}) {
+    if(isAnswered) return <CheckCircle2 className="size-5 stroke-emerald-700"/>
+    return <XCircle className="size-5 stroke-red-700"/>
 }
