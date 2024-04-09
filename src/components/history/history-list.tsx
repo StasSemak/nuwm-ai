@@ -3,7 +3,7 @@ import { http } from "../../lib/http";
 import { LoadingSpinner } from "../ui/loading-spinner";
 import { ErrorMessage } from "../ui/error-message";
 import { Button } from "../ui/button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   User as UserIcon,
   Bot as BotIcon,
@@ -12,6 +12,8 @@ import {
 } from "lucide-react";
 import { formatDate } from "../../lib/utils";
 import { MDXContent } from "../mdx";
+import { Input } from "../ui/input";
+import { Checkbox } from "../ui/checkbox";
 
 const ITEMS_PER_PAGE = 30;
 
@@ -31,11 +33,67 @@ type HistoryResponse = {
 
 export function HistoryList() {
   return (
-    <div className="flex flex-col gap-4 w-full">
-      {/* TODO: search bar */}
+    <div className="flex flex-col gap-5 w-full">
+      <FilterForm />
       <List />
     </div>
   );
+}
+
+function FilterForm() {
+  const [isUnansweredOnly, setIsUnansweredOnly] = useState<boolean>(false);
+  const [isQuestionsOnly, setIsQuestionsOnly] = useState<boolean>(false);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+
+    const isUnansweredParam = params.get("unansweredOnly");
+    setIsUnansweredOnly(isUnansweredParam === "true");
+
+    const isQuestionsParam = params.get("questionsOnly");
+    setIsQuestionsOnly(isQuestionsParam === "true");
+  }, [])
+
+  function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const params = new URLSearchParams(window.location.search);
+
+    if(isUnansweredOnly) params.set("unansweredOnly", isUnansweredOnly.toString());
+    else params.delete("unansweredOnly");
+
+    if(isQuestionsOnly) params.set("questionsOnly", isQuestionsOnly.toString());
+    else params.delete("questionsOnly");
+
+    window.history.replaceState({}, "", `${window.location.pathname}?${params}`);
+  }
+
+  return(
+    <form className="flex flex-row justify-between items-center" onSubmit={onSubmit}> 
+      <div className="flex flex-row gap-5">
+        <Checkbox
+          name="unansweredOnly"
+          id="unansweredOnly"
+          labelChildren="Лише без відповіді"
+          onChange={(e) => {
+            setIsUnansweredOnly(e.target.checked);
+          }}
+          checked={isUnansweredOnly}
+        />
+        <Checkbox
+          name="questionsOnly"
+          id="questionsOnly"
+          labelChildren="Лише запитання"
+          onChange={(e) => {
+            setIsQuestionsOnly(e.target.checked);
+          }}
+          checked={isQuestionsOnly}
+        />
+      </div>
+      <Button type="submit">
+        Застосувати
+      </Button>
+    </form>
+  )
 }
 
 function List() {
