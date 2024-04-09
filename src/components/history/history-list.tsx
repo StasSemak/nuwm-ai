@@ -12,7 +12,6 @@ import {
 } from "lucide-react";
 import { formatDate } from "../../lib/utils";
 import { MDXContent } from "../mdx";
-import { Input } from "../ui/input";
 import { Checkbox } from "../ui/checkbox";
 
 const ITEMS_PER_PAGE = 30;
@@ -65,6 +64,7 @@ function FilterForm() {
     else params.delete("questionsOnly");
 
     window.history.replaceState({}, "", `${window.location.pathname}?${params}`);
+    window.location.reload();
   }
 
   return(
@@ -103,9 +103,15 @@ function List() {
     useInfiniteQuery({
       queryKey: ["infinite-history-query"],
       queryFn: async ({ pageParam }) => {
-        const { data } = await http.get<HistoryResponse>(
-          `/history?page=${pageParam}&take=${ITEMS_PER_PAGE}`
-        );
+        const params = new URLSearchParams(window.location.search);
+        const isUnansweredParam = params.get("unansweredOnly");
+        const isQuestionsParam = params.get("questionsOnly");
+
+        let url = `/history?page=${pageParam}&take=${ITEMS_PER_PAGE}`;
+        if(isUnansweredParam) url += `&isAnswered=${!(isUnansweredParam === "true")}`;
+        if(isQuestionsParam) url += `&questionsOnly=${isQuestionsParam}`;        
+
+        const { data } = await http.get<HistoryResponse>(url);
         if (data.data.length < ITEMS_PER_PAGE) {
           setIsFetchedAll(true);
         }
