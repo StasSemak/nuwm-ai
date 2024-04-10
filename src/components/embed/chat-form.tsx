@@ -57,7 +57,7 @@ export function ChatForm() {
 
   return (
     <div className="p-2 w-full items-center min-h-screen relative">
-      <div className="fixed pb-4 pt-1 bg-zinc-100 bottom-0 w-[calc(100%-16px)] mx-auto">
+      <div className="fixed pb-4 pt-1 bg-zinc-100 bottom-0 w-[calc(100%-16px)] mx-auto z-10">
         <form className="flex gap-2 w-full" onSubmit={onSubmit}>
           <TextArea
             placeholder="Введіть ваше запитання"
