@@ -36,7 +36,6 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
         name: "ADMIN",
         token: `${cookies.authToken}`,
       });
-      console.log("DATA", data);
       return data;
     },
   });
@@ -101,4 +100,25 @@ export function LoginForm() {
       </Button>
     </form>
   );
+}
+
+export function Logout() {
+  const [cookies, _, removeCookie] = useCookies(["authToken"]);
+
+  function onClick() {
+    if (
+      !confirm(
+        "Вийти з адмінпанелі? Для доступу потрібно буде знову ввести пароль"
+      )
+    ) {
+      return;
+    }
+
+    if (!cookies.authToken) return;
+
+    removeCookie("authToken");
+    window.location.reload();
+  }
+
+  return <Button onClick={onClick}>Вийти</Button>;
 }

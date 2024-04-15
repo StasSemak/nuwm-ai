@@ -1,6 +1,6 @@
 import { FilesList } from "../components/admin/files-list";
 import { UploadFileForm } from "../components/admin/upload-file-form";
-import { AuthGuard } from "../components/auth-guard";
+import { AuthGuard, Logout } from "../components/auth-guard";
 
 export function Admin() {
   return (
@@ -15,5 +15,10 @@ export function Admin() {
 }
 
 function Heading() {
-  return <h1 className="text-zinc-950 text-3xl font-bold">Адмінпанель</h1>;
+  return( 
+    <div className="flex w-full justify-between items-center">
+      <h1 className="text-zinc-950 text-3xl font-bold">Адмінпанель</h1>
+      <Logout />
+    </div>
+  );
 }
