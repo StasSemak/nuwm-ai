@@ -1,4 +1,4 @@
-import { AuthGuard } from "../components/auth-guard";
+import { AuthGuard, Logout } from "../components/auth-guard";
 import { HistoryList } from "../components/history/history-list";
 
 export function History() {
@@ -13,5 +13,10 @@ export function History() {
 }
 
 function Heading() {
-  return <h1 className="text-zinc-950 text-3xl font-bold">Історія</h1>;
+  return( 
+    <div className="flex w-full justify-between items-center">
+      <h1 className="text-zinc-950 text-3xl font-bold">Історія</h1>
+      <Logout />
+    </div>
+  );
 }
