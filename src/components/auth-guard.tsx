@@ -36,7 +36,6 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
         name: "ADMIN",
         token: `${cookies.authToken}`,
       });
-      console.log("DATA", data);
       return data;
     },
   });
