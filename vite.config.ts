@@ -8,8 +8,6 @@ export default defineConfig({
       input: {
         index: "./index.html",
         embed: "./embed.html",
-        admin: "./admin.html",
-        history: "./history.html",
       },
     },
   },
