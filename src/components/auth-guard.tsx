@@ -90,6 +90,7 @@ export function LoginForm() {
           setPassword(e.target.value);
         }}
         name="password"
+        type="password"
       />
       <Button
         type="submit"
