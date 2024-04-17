@@ -4,13 +4,14 @@ import { UploadFileForm } from "../components/admin/upload-file-form";
 import { AuthGuard, Logout } from "../components/auth-guard";
 import { ArrowUpRight } from "lucide-react";
 import { AddCategory } from "../components/admin/categories/add-category";
+import { CategoriesList } from "../components/admin/categories/categories-list";
 
 function Layout({children}: {children: React.ReactNode}) {
   return(
     <div className="max-w-[1240px] mx-auto py-4 px-8 flex flex-col gap-8">
-      {/* <AuthGuard> */}
+      <AuthGuard>
         {children}
-      {/* </AuthGuard> */}
+      </AuthGuard>
     </div>
   )
 }
@@ -45,6 +46,7 @@ export function AdminCategories() {
     <Layout>
       <CategoriesHeading />
       <AddCategory />
+      <CategoriesList />
     </Layout>
   )
 }
