@@ -5,6 +5,7 @@ import { AuthGuard, Logout } from "../components/auth-guard";
 import { ArrowUpRight } from "lucide-react";
 import { AddCategory } from "../components/admin/categories/add-category";
 import { CategoriesList } from "../components/admin/categories/categories-list";
+import { FileView } from "../components/admin/file-view";
 
 function Layout({children}: {children: React.ReactNode}) {
   return(
@@ -25,7 +26,6 @@ export function Admin() {
     </Layout>
   );
 }
-
 function Heading() {
   return( 
     <div className="flex w-full justify-between items-center">
@@ -50,8 +50,6 @@ export function AdminCategories() {
     </Layout>
   )
 }
-
-
 function CategoriesHeading() {
   return( 
     <div className="flex w-full justify-between items-center">
@@ -65,4 +63,13 @@ function CategoriesHeading() {
       <Logout />
     </div>
   );
+}
+
+export function AdminFile() {
+  return(
+    <Layout>
+      <Heading />
+      <FileView />
+    </Layout>
+  )
 }
