@@ -8,7 +8,7 @@ import { useState } from "react";
 import { MultiSelect, Option } from "react-multi-select-component";
 import { selectLocalValues } from "../../lib/select-local";
 import { Button } from "../ui/button";
-import { Loader2 } from "lucide-react";
+import { Loader2, X as XIcon } from "lucide-react";
 
 type FileItem = {
   id: number;
@@ -39,7 +39,7 @@ type UpdateCategoriesPayload = {
 export function FileView() {
   const { id } = useParams();
 
-  const { data, isError, isLoading } = useQuery({
+  const { data, isError, isLoading, refetch } = useQuery({
     queryKey: ["get-one-file"],
     queryFn: async () => {
       const { data } = await http.get<FileResponse>(`/files/${id}`);
@@ -59,21 +59,67 @@ export function FileView() {
         <p className="font-bold text-zinc-950">Створено:</p>
         <p className="text-zinc-950">{formatDate(file.createdAt)}</p>
       </div>
-      <Categories categories={file.categories}/>
+      <Categories categories={file.categories} fileId={file.id} refetch={refetch}/>
       <AddCategories categories={file.categories} fileId={file.id}/>
     </div>
   )
 }
 
-function Categories({categories}: {categories: CategoryItem[]}) {
+type CatItemProps = {
+  category: CategoryItem;
+  fileId: number;
+  refetch: any;
+}
+function Categories({categories, fileId, refetch}: {categories: CategoryItem[], fileId: number, refetch: any}) {
   return(
-    <div className="flex gap-2">
-      <p className="font-bold text-zinc-950">Категорії:</p>
+    <div className="flex gap-2 flex-col">
+      <p className="font-bold text-zinc-950">Категорії</p>
       {categories.map((item, index) => (
-        <p key={`${index}-${item.id}`} className="text-zinc-950">{item.name}</p>
+        <CategoryListItem key={`${index}-${item.id}`} category={item} fileId={fileId} refetch={refetch}/>
       ))}
     </div>
   )
+}
+function CategoryListItem({category, fileId, refetch}: CatItemProps) {
+  return(
+    <div className="flex gap-1">
+      <p className="text-zinc-950">{category.name}</p>
+      <DeleteCategoryButton category={category} fileId={fileId} refetch={refetch}/>
+    </div>
+  )
+}
+function DeleteCategoryButton({category, fileId, refetch}: CatItemProps) {
+  function deleteHandler() {
+    if (
+      !confirm(
+        `Ви впевнені? Категорію '${category.name}' буде видалено з цього файлу!`
+      )
+    ) {
+      return;
+    }
+
+    http
+      .post(`/categories/remove`, {
+        fileId: fileId,
+        categoryId: category.id,
+      })
+      .then(() => {
+        alert("Операція успішна!");
+        refetch();
+      })
+      .catch(() => {
+        alert("Виникла помилка! Спробуйте ще раз");
+      });
+  }
+
+  return (
+    <button
+      className="inline-flex items-center justify-center rounded-md text-sm transition-all bg-transparent hover:bg-secondary/10 p-1 flex-shrink-0"
+      onClick={deleteHandler}
+    >
+      <XIcon className="stroke-zinc-700 size-4" />
+    </button>
+  );
 }
 
 function AddCategories({categories, fileId}: {categories: CategoryItem[], fileId: number}) {
