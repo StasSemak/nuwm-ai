@@ -22,7 +22,7 @@ function Form() {
   const [name, setName] = useState<string>("");
 
   const { mutate, isPending } = useMutation({
-    mutationKey: ["upload-file"],
+    mutationKey: ["create-category"],
     mutationFn: async (payload: CreateCategoryPayload) => {
       try {
         await http.post("/categories", payload);
