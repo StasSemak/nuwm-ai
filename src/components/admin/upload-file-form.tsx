@@ -2,11 +2,43 @@ import { useState } from "react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { http } from "../../lib/http";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
+import { ErrorMessage } from "../ui/error-message";
+import { LoadingSpinner } from "../ui/loading-spinner";
+import { MultiSelect, Option } from "react-multi-select-component";
+import { selectLocalValues } from "../../lib/select-local";
+
+type CategoryItem = {
+  id: number;
+  name: string; 
+}
+type CategoriesResponse = {
+  error: boolean;
+  message: string;
+  data: CategoryItem[];
+}
 
 export function UploadFileForm() {
+  return (
+    <div className="flex flex-col gap-4">
+      <h2 className="text-2xl text-zinc-950">Завантажити файл</h2>
+      <Form />
+    </div>
+  );
+}
+
+function Form() {
   const [file, setFile] = useState<File | undefined>();
+  const [selectedCategories, setSelectedCategories] = useState<Option[]>([]);
+
+  const { data: categories, isError, isLoading } = useQuery({
+    queryKey: ["categories"],
+    queryFn: async () => {
+      const { data } = await http.get<CategoriesResponse>("/categories");
+      return data
+    }
+  })
 
   const { mutate, isPending } = useMutation({
     mutationKey: ["upload-file"],
@@ -33,14 +65,28 @@ export function UploadFileForm() {
 
     const formData = new FormData();
     formData.append("file", file);
+    const selectedCatIdxs = selectedCategories.map((item) => +item.value);
+    for (let i = 0; i < selectedCatIdxs.length; i++) {
+      const item = selectedCatIdxs[i];
+      formData.append("categories", item.toString());
+    }
 
     mutate(formData);
   }
 
+  if(isLoading) return <LoadingSpinner />;
+  if(isError || !categories || categories.error) return <ErrorMessage />;
+
+  const catOptions = categories.data.map((item) => {
+    return {
+      label: item.name,
+      value: item.id,
+    };
+  });
+
   return (
-    <div className="flex flex-col gap-4">
-      <h2 className="text-2xl text-zinc-950">Завантажити файл</h2>
-      <form className="flex gap-2" onSubmit={onSubmit}>
+    <form className="flex flex-col gap-3" onSubmit={onSubmit}>
+      <div className="flex gap-2">
         <Input
           type="file"
           onChange={(e) => {
@@ -55,7 +101,16 @@ export function UploadFileForm() {
           )}
           Завантажити
         </Button>
-      </form>
-    </div>
+      </div>
+      {!!catOptions.length &&
+        <MultiSelect
+          labelledBy="Select categories"
+          value={selectedCategories}
+          options={catOptions}
+          onChange={setSelectedCategories}
+          overrideStrings={selectLocalValues("Вибрати категорії")}
+        />
+      }
+    </form>
   );
 }

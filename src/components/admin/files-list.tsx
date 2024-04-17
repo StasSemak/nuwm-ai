@@ -3,7 +3,8 @@ import { http } from "../../lib/http";
 import { LoadingSpinner } from "../ui/loading-spinner";
 import { ErrorMessage } from "../ui/error-message";
 import { formatDate } from "../../lib/utils";
-import { Trash } from "lucide-react";
+import { ExternalLinkIcon, Trash } from "lucide-react";
+import { Link } from "react-router-dom";
 
 type FileItem = {
   id: number;
@@ -53,7 +54,12 @@ export function FileCard({ file, refetch }: { file: FileItem; refetch: any }) {
         <p className="text-zinc-950 font-bold">{file.name}</p>
         <p className="text-sm mt-0.5">{formatDate(file.createdAt)}</p>
       </div>
-      <DeleteButton id={file.id} name={file.name} refetch={refetch} />
+      <div className="flex gap-1">
+        <DeleteButton id={file.id} name={file.name} refetch={refetch} />
+        <Link to={`file/${file.id}`} className="inline-flex items-center justify-center rounded-md text-sm transition-all bg-transparent hover:bg-zinc-200 h-9 px-2 flex-shrink-0">
+          <ExternalLinkIcon className="stroke-main size-4"/>
+        </Link>
+      </div>
     </div>
   );
 }
@@ -92,7 +98,7 @@ function DeleteButton({
       className="inline-flex items-center justify-center rounded-md text-sm transition-all bg-transparent hover:bg-zinc-200 h-9 px-2 flex-shrink-0"
       onClick={deleteHandler}
     >
-      <Trash className="stroke-main h-4 w-4" />
+      <Trash className="stroke-main size-4" />
     </button>
   );
 }
