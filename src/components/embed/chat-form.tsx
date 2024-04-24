@@ -15,6 +15,7 @@ import { cn } from "../../lib/utils";
 type ChatQuestion = {
   question: string;
   chatId: string;
+  categoryId: number;
 };
 type ChatResponse = {
   error: boolean;
@@ -40,11 +41,11 @@ const chatId = nanoid();
 export function ChatForm() {
   const [chatQuestion, setChatQuestion] = useState<ChatQuestion>({
     question: "",
+    categoryId: -1,
     chatId,
   });
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   const inputRef = useRef<HTMLTextAreaElement>(null);
-  const [selectedCategory, setSelectedCategory] = useState<number>(-1);
 
   const { data: categories, isError: isCategoriesError } = useQuery({
     queryKey: ["categories"],
@@ -71,7 +72,6 @@ export function ChatForm() {
         data: chatQuestion.question,
       },
     ]);
-    console.log(selectedCategory);
     mutate(chatQuestion);
     if (inputRef.current) inputRef.current.value = "";
   }
@@ -88,7 +88,7 @@ export function ChatForm() {
             placeholder="Введіть ваше запитання"
             name="question"
             onChange={(e) => {
-              setChatQuestion({ ...chatQuestion, question: e.target.value });
+              setChatQuestion((prev) => ({ ...prev, question: e.target.value }));
             }}
             aria-label="Запитання"
             ref={inputRef}
@@ -98,7 +98,7 @@ export function ChatForm() {
               className="w-min" 
               defaultValue="-1" 
               onChange={(e) =>{
-                setSelectedCategory(parseInt(e.target.value))
+                setChatQuestion((prev) => ({ ...prev, categoryId: parseInt(e.target.value) }));
               }}
             >
               <option value="-1">Усі категорії</option>
