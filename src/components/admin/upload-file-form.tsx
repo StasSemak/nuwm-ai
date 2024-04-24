@@ -64,15 +64,15 @@ function Form() {
     mutate(formData);
   }
 
-  if(isLoading) return <LoadingSpinner />;
-  if(isError || !categories || categories.error) return <ErrorMessage />;
-
-  const catOptions = useMemo(() => categories.data.map((item) => {
+  const catOptions = useMemo(() => categories?.data.map((item) => {
     return {
       label: item.name,
       value: item.id,
     };
   }), [categories]);
+
+  if(isLoading) return <LoadingSpinner />;
+  if(isError || !categories || categories.error) return <ErrorMessage />;
 
   return (
     <form className="flex flex-col gap-3" onSubmit={onSubmit}>
@@ -92,7 +92,7 @@ function Form() {
           Завантажити
         </Button>
       </div>
-      {!!catOptions.length &&
+      {(!!catOptions && !!catOptions.length) &&
         <MultiSelect
           labelledBy="Select categories"
           value={selectedCategories}

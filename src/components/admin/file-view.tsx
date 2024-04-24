@@ -44,7 +44,7 @@ export function FileView() {
         <p className="text-zinc-950">{formatDate(file.createdAt)}</p>
       </div>
       <Categories categories={file.categories} fileId={file.id} refetch={refetch}/>
-      <AddCategories categories={file.categories} fileId={file.id}/>
+      <AddCategories categories={file.categories} fileId={file.id} refetch={refetch}/>
     </div>
   )
 }
@@ -106,16 +106,16 @@ function DeleteCategoryButton({category, fileId, refetch}: CatItemProps) {
   );
 }
 
-function AddCategories({categories, fileId}: {categories: CategoryItem[], fileId: number}) {
+function AddCategories({categories, fileId, refetch}: {categories: CategoryItem[], fileId: number, refetch: any}) {
   return(
     <div className="flex flex-col gap-2 w-full mt-3">
       <h2 className="text-xl text-zinc-950">Додати категорії</h2>
-      <Form categories={categories} fileId={fileId}/>
+      <Form categories={categories} fileId={fileId} refetch={refetch}/>
     </div>
   )
 }
 
-function Form({categories, fileId}: {categories: CategoryItem[], fileId: number}) {
+function Form({categories, fileId, refetch}: {categories: CategoryItem[], fileId: number, refetch: any}) {
   const [selectedCategories, setSelectedCategories] = useState<Option[]>([]);
 
   const { data, isError, isLoading } = useQuery({
@@ -133,7 +133,7 @@ function Form({categories, fileId}: {categories: CategoryItem[], fileId: number}
         await http.post("/categories/assign", payload);
 
         alert("Категорії успішно оновлено!");
-        window.location.reload();
+        refetch();
       }
       catch {
         alert("Виникла помилка! Спробуйте ще раз");
@@ -153,10 +153,7 @@ function Form({categories, fileId}: {categories: CategoryItem[], fileId: number}
     });
   }
 
-  if(isLoading) return <LoadingSpinner />;
-  if(isError || !data || data.error) return <ErrorMessage />;
-
-  const catOptions = useMemo(() => data.data.map((item) => {
+  const catOptions = useMemo(() => data?.data.map((item) => {
     let isDisabled = false;
     for (let i = 0; i < categories.length; i++) {
       if(categories[i].id === item.id) isDisabled = true;
@@ -168,7 +165,10 @@ function Form({categories, fileId}: {categories: CategoryItem[], fileId: number}
     };
   }), [data, categories]);
 
-  if(catOptions.length === 0) return null;
+  if(isLoading) return <LoadingSpinner />;
+  if(isError || !data || data.error) return <ErrorMessage />;
+
+  if(!catOptions || catOptions.length === 0) return null;
 
   return(
     <form className="flex gap-2 w-full" onSubmit={onSubmit}>
