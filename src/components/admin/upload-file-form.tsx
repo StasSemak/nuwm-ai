@@ -98,7 +98,7 @@ function Form() {
           value={selectedCategories}
           options={catOptions}
           onChange={setSelectedCategories}
-          overrideStrings={selectLocalValues("Вибрати категорії")}
+          overrideStrings={selectLocalValues("Вибрати категорії", catOptions)}
         />
       }
     </form>

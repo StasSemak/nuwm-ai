@@ -177,7 +177,7 @@ function Form({categories, fileId}: {categories: CategoryItem[], fileId: number}
         value={selectedCategories}
         options={catOptions}
         onChange={setSelectedCategories}
-        overrideStrings={selectLocalValues("Вибрати категорії")}
+        overrideStrings={selectLocalValues("Вибрати категорії", catOptions)}
         className="flex-grow"
       />
       <Button type="submit" disabled={isPending || selectedCategories.length === 0}>
