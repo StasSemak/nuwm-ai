@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "../ui/button";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { http } from "../../lib/http";
 import { LoadingSpinner } from "../ui/loading-spinner";
 import { ErrorMessage } from "../ui/error-message";
@@ -9,10 +9,13 @@ import { TextArea } from "../ui/textarea";
 import { CopyButton } from "./copy-button";
 import { MDXContent } from "../mdx";
 import { nanoid } from "nanoid";
+import { Select } from "../ui/select";
+import { cn } from "../../lib/utils";
 
 type ChatQuestion = {
   question: string;
   chatId: string;
+  categoryId: number;
 };
 type ChatResponse = {
   error: boolean;
@@ -23,16 +26,34 @@ type ChatMessage = {
   from: "user" | "server";
   data: string;
 };
+type CategoryItem = {
+  id: number;
+  name: string; 
+};
+type CategoriesResponse = {
+  error: boolean;
+  message: string;
+  data: CategoryItem[];
+};
 
 const chatId = nanoid();
 
 export function ChatForm() {
   const [chatQuestion, setChatQuestion] = useState<ChatQuestion>({
     question: "",
+    categoryId: -1,
     chatId,
   });
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+
+  const { data: categories, isError: isCategoriesError } = useQuery({
+    queryKey: ["categories"],
+    queryFn: async () => {
+      const { data } = await http.get<CategoriesResponse>("/categories");
+      return data;
+    }
+  })
 
   const { mutate, isPending, isError, isSuccess, data } = useMutation({
     mutationKey: ["answer"],
@@ -55,19 +76,37 @@ export function ChatForm() {
     if (inputRef.current) inputRef.current.value = "";
   }
 
+  const isCategories = useMemo(() => {
+    return !isCategoriesError && !!categories && !categories.error
+  }, [isCategoriesError, categories])
+
   return (
     <div className="p-2 w-full items-center min-h-screen relative">
       <div className="fixed pb-4 pt-1 bg-zinc-100 bottom-0 w-[calc(100%-16px)] mx-auto z-10">
-        <form className="flex gap-2 w-full" onSubmit={onSubmit}>
+        <form className={cn("flex gap-2 w-full justify-center", isCategories && "flex-wrap md:flex-nowrap")} onSubmit={onSubmit}>
           <TextArea
             placeholder="Введіть ваше запитання"
             name="question"
             onChange={(e) => {
-              setChatQuestion({ ...chatQuestion, question: e.target.value });
+              setChatQuestion((prev) => ({ ...prev, question: e.target.value }));
             }}
             aria-label="Запитання"
             ref={inputRef}
           />
+          {isCategories &&
+            <Select 
+              className="w-min" 
+              defaultValue="-1" 
+              onChange={(e) =>{
+                setChatQuestion((prev) => ({ ...prev, categoryId: parseInt(e.target.value) }));
+              }}
+            >
+              <option value="-1">Усі категорії</option>
+              {categories?.data.map((item, index) => (
+                <option key={`${item.id}-${index}`} value={item.id}>{item.name}</option>
+              ))}
+            </Select>
+          }
           <Button
             type="submit"
             disabled={chatQuestion.question === ""}
