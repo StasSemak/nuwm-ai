@@ -7,7 +7,7 @@ export interface CheckboxProps
   }
 
 const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
-  ({ className, labelChildren, type, ...props }, ref) => {
+  ({ className, labelChildren, ...props }, ref) => {
     return (
       <div className="flex items-center">
         <label htmlFor={props.id} className="mr-2">
