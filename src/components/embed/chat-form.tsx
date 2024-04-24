@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "../ui/button";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { http } from "../../lib/http";
@@ -10,6 +10,7 @@ import { CopyButton } from "./copy-button";
 import { MDXContent } from "../mdx";
 import { nanoid } from "nanoid";
 import { Select } from "../ui/select";
+import { cn } from "../../lib/utils";
 
 type ChatQuestion = {
   question: string;
@@ -75,10 +76,14 @@ export function ChatForm() {
     if (inputRef.current) inputRef.current.value = "";
   }
 
+  const isCategories = useMemo(() => {
+    return !isCategoriesError && !!categories && !categories.error
+  }, [isCategoriesError, categories])
+
   return (
     <div className="p-2 w-full items-center min-h-screen relative">
       <div className="fixed pb-4 pt-1 bg-zinc-100 bottom-0 w-[calc(100%-16px)] mx-auto z-10">
-        <form className="flex gap-2 w-full flex-wrap md:flex-nowrap justify-center" onSubmit={onSubmit}>
+        <form className={cn("flex gap-2 w-full justify-center", isCategories && "flex-wrap md:flex-nowrap")} onSubmit={onSubmit}>
           <TextArea
             placeholder="Введіть ваше запитання"
             name="question"
@@ -88,7 +93,7 @@ export function ChatForm() {
             aria-label="Запитання"
             ref={inputRef}
           />
-          {(!isCategoriesError && !!categories && !categories.error) &&
+          {isCategories &&
             <Select 
               className="w-min" 
               defaultValue="-1" 
@@ -97,7 +102,7 @@ export function ChatForm() {
               }}
             >
               <option value="-1">Усі категорії</option>
-              {categories.data.map((item, index) => (
+              {categories?.data.map((item, index) => (
                 <option key={`${item.id}-${index}`} value={item.id}>{item.name}</option>
               ))}
             </Select>
