@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { http } from "../../lib/http";
@@ -67,12 +67,12 @@ function Form() {
   if(isLoading) return <LoadingSpinner />;
   if(isError || !categories || categories.error) return <ErrorMessage />;
 
-  const catOptions = categories.data.map((item) => {
+  const catOptions = useMemo(() => categories.data.map((item) => {
     return {
       label: item.name,
       value: item.id,
     };
-  });
+  }), [categories]);
 
   return (
     <form className="flex flex-col gap-3" onSubmit={onSubmit}>

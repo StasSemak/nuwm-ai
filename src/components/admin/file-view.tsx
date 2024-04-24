@@ -4,7 +4,7 @@ import { http } from "../../lib/http";
 import { LoadingSpinner } from "../ui/loading-spinner";
 import { ErrorMessage } from "../ui/error-message";
 import { formatDate } from "../../lib/utils";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { MultiSelect, Option } from "react-multi-select-component";
 import { selectLocalValues } from "../../lib/select-local";
 import { Button } from "../ui/button";
@@ -156,7 +156,7 @@ function Form({categories, fileId}: {categories: CategoryItem[], fileId: number}
   if(isLoading) return <LoadingSpinner />;
   if(isError || !data || data.error) return <ErrorMessage />;
 
-  const catOptions = data.data.map((item) => {
+  const catOptions = useMemo(() => data.data.map((item) => {
     let isDisabled = false;
     for (let i = 0; i < categories.length; i++) {
       if(categories[i].id === item.id) isDisabled = true;
@@ -166,7 +166,7 @@ function Form({categories, fileId}: {categories: CategoryItem[], fileId: number}
       value: item.id,
       disabled: isDisabled,
     };
-  });
+  }), [data, categories]);
 
   if(catOptions.length === 0) return null;
 

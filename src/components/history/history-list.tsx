@@ -3,7 +3,7 @@ import { http } from "../../lib/http";
 import { LoadingSpinner } from "../ui/loading-spinner";
 import { ErrorMessage } from "../ui/error-message";
 import { Button } from "../ui/button";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   User as UserIcon,
   Bot as BotIcon,
@@ -125,8 +125,8 @@ function List() {
     if (data.pages[i].error === true) return <ErrorMessage />;
   }
 
-  const historyResponses = data.pages.flatMap((item) => item);
-  const historyData = historyResponses.flatMap((item) => item.data);
+  const historyResponses = useMemo(() => data.pages.flatMap((item) => item), [data]);
+  const historyData = useMemo(() => historyResponses.flatMap((item) => item.data), [historyResponses]);
 
   return (
     <div className="flex flex-col gap-4 w-full">
