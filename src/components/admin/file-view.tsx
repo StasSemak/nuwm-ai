@@ -134,6 +134,7 @@ function Form({categories, fileId, refetch}: {categories: CategoryItem[], fileId
 
         alert("Категорії успішно оновлено!");
         refetch();
+        setSelectedCategories([]);
       }
       catch {
         alert("Виникла помилка! Спробуйте ще раз");
