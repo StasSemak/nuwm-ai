@@ -9,16 +9,6 @@ import { LoadingSpinner } from "../ui/loading-spinner";
 import { MultiSelect, Option } from "react-multi-select-component";
 import { selectLocalValues } from "../../lib/select-local";
 
-type CategoryItem = {
-  id: number;
-  name: string; 
-}
-type CategoriesResponse = {
-  error: boolean;
-  message: string;
-  data: CategoryItem[];
-}
-
 export function UploadFileForm() {
   return (
     <div className="flex flex-col gap-4">

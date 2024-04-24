@@ -6,14 +6,7 @@ import { formatDate } from "../../lib/utils";
 import { ExternalLinkIcon, Trash } from "lucide-react";
 import { Link } from "react-router-dom";
 
-type FileItem = {
-  id: number;
-  name: string;
-  createdAt: string;
-};
-type FilesListResponse = {
-  error: boolean;
-  message: string;
+type FilesResponse = BaseResponse & {
   data: FileItem[];
 };
 
@@ -30,7 +23,7 @@ function List() {
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["get-all-files"],
     queryFn: async () => {
-      const { data } = await http.get<FilesListResponse>("/files");
+      const { data } = await http.get<FilesResponse>("/files");
       return data;
     },
   });

@@ -7,9 +7,7 @@ import { useState } from "react";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 
-type TokenResponse = {
-  error: boolean;
-  message: string;
+type TokenResponse = BaseResponse & {
   data: {
     valid: boolean;
   };
@@ -18,9 +16,7 @@ type LoginPayload = {
   name: string;
   password: string;
 };
-type LoginResponse = {
-  error: boolean;
-  message: string;
+type LoginResponse = BaseResponse & {
   data: {
     token: string;
   };

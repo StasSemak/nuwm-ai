@@ -10,31 +10,15 @@ import { selectLocalValues } from "../../lib/select-local";
 import { Button } from "../ui/button";
 import { Loader2, X as XIcon } from "lucide-react";
 
-type FileItem = {
-  id: number;
-  name: string;
-  createdAt: string;
-};
-type CategoryItem = {
-  id: number;
-  name: string;
-};
-type FileResponse = {
-  error: boolean;
-  message: string;
+type FileResponse = BaseResponse & {
   data: FileItem & {
     categories: CategoryItem[];
   };
 };
-type CategoriesResponse = {
-  error: boolean;
-  message: string;
-  data: CategoryItem[];
-};
 type UpdateCategoriesPayload = {
   fileId: number;
   categoryIds: number[];
-}
+};
 
 export function FileView() {
   const { id } = useParams();

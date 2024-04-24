@@ -24,9 +24,7 @@ type HistoryItem = {
   createdAt: string;
   isAnswered: boolean;
 };
-type HistoryResponse = {
-  error: boolean;
-  message: string;
+type HistoryResponse = BaseResponse & {
   data: HistoryItem[];
 };
 
