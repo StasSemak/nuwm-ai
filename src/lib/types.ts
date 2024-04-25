@@ -12,6 +12,9 @@ type FileItem = {
   createdAt: string;
   categories: CategoryItem[];
 };
+type FilesResponse = BaseResponse & {
+  data: FileItem[];
+};
 
 type BaseResponse = {
   error: boolean;

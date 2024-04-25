@@ -6,10 +6,6 @@ import { ExternalLinkIcon, Trash } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Badge } from "../../ui/badge";
 
-type FilesResponse = BaseResponse & {
-  data: FileItem[];
-};
-
 export function FilesList() {
   return (
     <div className="flex flex-col gap-4 w-full">

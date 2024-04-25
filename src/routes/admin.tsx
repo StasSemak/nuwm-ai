@@ -5,6 +5,7 @@ import { CategoriesList } from "../components/admin/categories/categories-list";
 import { FileView } from "../components/admin/files/file-view";
 import { HistoryList } from "../components/admin/history/history-list";
 import { AdminHome } from "../components/admin/home";
+import { CategoryView } from "../components/admin/categories/category-view";
 
 export function Admin() {
   return(
@@ -20,6 +21,11 @@ export function AdminFiles() {
     </>
   );
 }
+export function AdminFile() {
+  return(
+    <FileView />
+  )
+}
 
 export function AdminCategories() {
   return(
@@ -29,10 +35,9 @@ export function AdminCategories() {
     </>
   )
 }
-
-export function AdminFile() {
+export function AdminCategory() {
   return(
-    <FileView />
+    <CategoryView />
   )
 }
 
