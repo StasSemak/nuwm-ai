@@ -5,6 +5,14 @@ import { CategoriesList } from "../components/admin/categories/categories-list";
 import { FileView } from "../components/admin/file-view";
 
 export function Admin() {
+  return(
+    <div>
+      admin here
+    </div>
+  )
+}
+
+export function AdminFiles() {
   return (
     <>
       <UploadFileForm />
@@ -24,8 +32,6 @@ export function AdminCategories() {
 
 export function AdminFile() {
   return(
-    <>
-      <FileView />
-    </>
+    <FileView />
   )
 }
