@@ -1,5 +1,6 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Logout } from "../auth-guard";
+import { cn } from "../../lib/utils";
 
 const headerNavItems = [
   {
@@ -19,9 +20,9 @@ const headerNavItems = [
 export function AdminHeader() {
   return (
     <header className="flex w-full justify-between items-center">
-      <nav className="flex items-end gap-10">
+      <nav className="flex items-center gap-10">
         {headerNavItems.map((item, index) => (
-          <NavItem key={item.slug + index} {...item}/>
+          <NavItem key={item.slug + index} {...item} />
         ))}
       </nav>
       <Logout />
@@ -29,13 +30,19 @@ export function AdminHeader() {
   );
 }
 
-export function NavItem({ name, slug }: { name: string, slug: string }) {
-  return(
+export function NavItem({ name, slug }: { name: string; slug: string }) {
+  const location = useLocation();
+  const isActive = location.pathname.includes(slug);
+
+  return (
     <Link
       to={slug}
-      className="text-xl font-bold text-zinc-950"
+      className={cn(
+        "text-xl font-bold text-zinc-950 box-content transition-all hover:border-zinc-950 border-b-2 border-transparent",
+        isActive && "border-zinc-950"
+      )}
     >
       {name}
     </Link>
-  )
+  );
 }
