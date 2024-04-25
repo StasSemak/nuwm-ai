@@ -1,29 +1,20 @@
 import { Link } from "react-router-dom";
 import { FilesList } from "../components/admin/files-list";
 import { UploadFileForm } from "../components/admin/upload-file-form";
-import { AuthGuard, Logout } from "../components/auth-guard";
+import { Logout } from "../components/auth-guard";
 import { ArrowUpRight } from "lucide-react";
 import { AddCategory } from "../components/admin/categories/add-category";
 import { CategoriesList } from "../components/admin/categories/categories-list";
 import { FileView } from "../components/admin/file-view";
 
-function Layout({children}: {children: React.ReactNode}) {
-  return(
-    <div className="max-w-[1240px] mx-auto py-4 px-8 flex flex-col gap-8">
-      <AuthGuard>
-        {children}
-      </AuthGuard>
-    </div>
-  )
-}
 
 export function Admin() {
   return (
-    <Layout>
+    <>
       <Heading />
       <UploadFileForm />
       <FilesList />
-    </Layout>
+    </>
   );
 }
 function Heading() {
@@ -43,11 +34,11 @@ function Heading() {
 
 export function AdminCategories() {
   return(
-    <Layout>
+    <>
       <CategoriesHeading />
       <AddCategory />
       <CategoriesList />
-    </Layout>
+    </>
   )
 }
 function CategoriesHeading() {
@@ -67,9 +58,9 @@ function CategoriesHeading() {
 
 export function AdminFile() {
   return(
-    <Layout>
+    <>
       <Heading />
       <FileView />
-    </Layout>
+    </>
   )
 }
