@@ -42,12 +42,12 @@ function List() {
 
 export function FileCard({ file, refetch }: { file: FileItem; refetch: any }) {
   return (
-    <div className="flex items-center px-3 justify-between rounded-md h-14 bg-zinc-100">
-      <div className="flex gap-3 items-center">
+    <div className="flex flex-col md:flex-row items-start md:items-center p-3 justify-between rounded-md bg-zinc-100">
+      <div className="flex gap-3 items-start md:items-center flex-col md:flex-row">
         <p className="text-zinc-950 font-bold">{file.name}</p>
         <CategoriesBadges categories={file.categories}/>
       </div>
-      <div className="flex gap-1">
+      <div className="flex gap-1 mt-2 md:mt-0">
         <DeleteButton id={file.id} name={file.name} refetch={refetch} />
         <Link to={`file/${file.id}`} className="inline-flex items-center justify-center rounded-md text-sm transition-all bg-transparent hover:bg-zinc-200 h-9 px-2 flex-shrink-0">
           <ExternalLinkIcon className="stroke-main size-4"/>
