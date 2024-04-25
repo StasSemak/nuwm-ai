@@ -2,9 +2,9 @@ import { useQuery } from "@tanstack/react-query";
 import { http } from "../../lib/http";
 import { LoadingSpinner } from "../ui/loading-spinner";
 import { ErrorMessage } from "../ui/error-message";
-import { formatDate } from "../../lib/utils";
 import { ExternalLinkIcon, Trash } from "lucide-react";
 import { Link } from "react-router-dom";
+import { Badge } from "../ui/badge";
 
 type FilesResponse = BaseResponse & {
   data: FileItem[];
@@ -43,9 +43,9 @@ function List() {
 export function FileCard({ file, refetch }: { file: FileItem; refetch: any }) {
   return (
     <div className="flex items-center px-3 justify-between rounded-md h-14 bg-zinc-100">
-      <div className="flex gap-2">
+      <div className="flex gap-3">
         <p className="text-zinc-950 font-bold">{file.name}</p>
-        <p className="text-sm mt-0.5">{formatDate(file.createdAt)}</p>
+        <CategoriesBadges categories={file.categories}/>
       </div>
       <div className="flex gap-1">
         <DeleteButton id={file.id} name={file.name} refetch={refetch} />
@@ -55,6 +55,16 @@ export function FileCard({ file, refetch }: { file: FileItem; refetch: any }) {
       </div>
     </div>
   );
+}
+
+function CategoriesBadges({categories}: {categories: CategoryItem[]}) {
+  return (
+    <div className="flex gap-2">
+      {categories.map((item, index) => (
+        <Badge key={`${item.id}-${index}`}>{item.name}</Badge>
+      ))}
+    </div>
+  )
 }
 
 function DeleteButton({

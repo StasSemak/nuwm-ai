@@ -10,6 +10,7 @@ type FileItem = {
   id: number;
   name: string;
   createdAt: string;
+  categories: CategoryItem[];
 };
 
 type BaseResponse = {

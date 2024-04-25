@@ -11,9 +11,7 @@ import { Button } from "../ui/button";
 import { Loader2, X as XIcon } from "lucide-react";
 
 type FileResponse = BaseResponse & {
-  data: FileItem & {
-    categories: CategoryItem[];
-  };
+  data: FileItem;
 };
 type UpdateCategoriesPayload = {
   fileId: number;
