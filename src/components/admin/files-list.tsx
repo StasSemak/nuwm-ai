@@ -43,7 +43,7 @@ function List() {
 export function FileCard({ file, refetch }: { file: FileItem; refetch: any }) {
   return (
     <div className="flex items-center px-3 justify-between rounded-md h-14 bg-zinc-100">
-      <div className="flex gap-3">
+      <div className="flex gap-3 items-center">
         <p className="text-zinc-950 font-bold">{file.name}</p>
         <CategoriesBadges categories={file.categories}/>
       </div>
