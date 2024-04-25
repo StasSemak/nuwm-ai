@@ -21,16 +21,21 @@ export function AdminHeader() {
     <header className="flex w-full justify-between items-center">
       <nav className="flex items-end gap-10">
         {headerNavItems.map((item, index) => (
-          <Link
-            key={item.slug + index}
-            to={item.slug}
-            className="text-xl font-bold text-zinc-950"
-          >
-            {item.name}
-          </Link>
+          <NavItem key={item.slug + index} {...item}/>
         ))}
       </nav>
       <Logout />
     </header>
   );
+}
+
+export function NavItem({ name, slug }: { name: string, slug: string }) {
+  return(
+    <Link
+      to={slug}
+      className="text-xl font-bold text-zinc-950"
+    >
+      {name}
+    </Link>
+  )
 }
