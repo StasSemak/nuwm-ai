@@ -1,10 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
-import { http } from "../../lib/http";
-import { LoadingSpinner } from "../ui/loading-spinner";
-import { ErrorMessage } from "../ui/error-message";
+import { http } from "../../../lib/http";
+import { LoadingSpinner } from "../../ui/loading-spinner";
+import { ErrorMessage } from "../../ui/error-message";
 import { ExternalLinkIcon, Trash } from "lucide-react";
 import { Link } from "react-router-dom";
-import { Badge } from "../ui/badge";
+import { Badge } from "../../ui/badge";
 
 type FilesResponse = BaseResponse & {
   data: FileItem[];

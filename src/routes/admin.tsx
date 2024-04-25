@@ -1,15 +1,14 @@
-import { FilesList } from "../components/admin/files-list";
-import { UploadFileForm } from "../components/admin/upload-file-form";
+import { FilesList } from "../components/admin/files/files-list";
+import { UploadFileForm } from "../components/admin/files/upload-file-form";
 import { AddCategory } from "../components/admin/categories/add-category";
 import { CategoriesList } from "../components/admin/categories/categories-list";
-import { FileView } from "../components/admin/file-view";
+import { FileView } from "../components/admin/files/file-view";
 import { HistoryList } from "../components/admin/history/history-list";
+import { AdminHome } from "../components/admin/home";
 
 export function Admin() {
   return(
-    <div>
-      admin here
-    </div>
+    <AdminHome />
   )
 }
 
