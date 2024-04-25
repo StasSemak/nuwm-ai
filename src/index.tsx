@@ -3,8 +3,7 @@ import "./styles/index.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Index } from "./routes";
 import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
-import { Admin, AdminCategories, AdminFile, AdminFiles } from "./routes/admin";
-import { History } from "./routes/history";
+import { Admin, AdminCategories, AdminFile, AdminFiles, AdminHistory } from "./routes/admin";
 import { AdminLayout } from "./routes/layout";
 
 const queryClient = new QueryClient();
@@ -21,8 +20,8 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
             <Route path="view/:id" element={<AdminFile />} />
           </Route>
           <Route path="categories" element={<AdminCategories />} />
+          <Route path="history" element={<AdminHistory />} />
         </Route>
-        <Route path="/history" element={<History />} />
       </Routes>
     </BrowserRouter>
   </QueryClientProvider>

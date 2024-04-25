@@ -3,6 +3,7 @@ import { UploadFileForm } from "../components/admin/upload-file-form";
 import { AddCategory } from "../components/admin/categories/add-category";
 import { CategoriesList } from "../components/admin/categories/categories-list";
 import { FileView } from "../components/admin/file-view";
+import { HistoryList } from "../components/admin/history/history-list";
 
 export function Admin() {
   return(
@@ -34,4 +35,10 @@ export function AdminFile() {
   return(
     <FileView />
   )
+}
+
+export function AdminHistory() {
+  return (
+    <HistoryList />
+  );
 }
