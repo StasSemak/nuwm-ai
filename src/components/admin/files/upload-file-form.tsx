@@ -1,13 +1,13 @@
 import { useMemo, useState } from "react";
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
-import { http } from "../../lib/http";
+import { Button } from "../../ui/button";
+import { Input } from "../../ui/input";
+import { http } from "../../../lib/http";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
-import { ErrorMessage } from "../ui/error-message";
-import { LoadingSpinner } from "../ui/loading-spinner";
+import { ErrorMessage } from "../../ui/error-message";
+import { LoadingSpinner } from "../../ui/loading-spinner";
 import { MultiSelect, Option } from "react-multi-select-component";
-import { selectLocalValues } from "../../lib/select-local";
+import { selectLocalValues } from "../../../lib/select-local";
 
 export function UploadFileForm() {
   return (

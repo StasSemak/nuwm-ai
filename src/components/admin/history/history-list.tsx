@@ -1,18 +1,18 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { http } from "../../lib/http";
-import { LoadingSpinner } from "../ui/loading-spinner";
-import { ErrorMessage } from "../ui/error-message";
-import { Button } from "../ui/button";
-import { useEffect, useMemo, useState } from "react";
+import { http } from "../../../lib/http";
+import { LoadingSpinner } from "../../ui/loading-spinner";
+import { ErrorMessage } from "../../ui/error-message";
+import { Button } from "../../ui/button";
+import { useEffect, useState } from "react";
 import {
   User as UserIcon,
   Bot as BotIcon,
   XCircle,
   CheckCircle2,
 } from "lucide-react";
-import { formatDate } from "../../lib/utils";
-import { MDXContent } from "../mdx";
-import { Checkbox } from "../ui/checkbox";
+import { formatDate } from "../../../lib/utils";
+import { MDXContent } from "../../mdx";
+import { Checkbox } from "../../ui/checkbox";
 
 const ITEMS_PER_PAGE = 30;
 
@@ -125,8 +125,8 @@ function List() {
     if (data.pages[i].error === true) return <ErrorMessage />;
   }
 
-  const historyResponses = useMemo(() => data.pages.flatMap((item) => item), [data]);
-  const historyData = useMemo(() => historyResponses.flatMap((item) => item.data), [historyResponses]);
+  const historyResponses = data.pages.flatMap((item) => item);
+  const historyData = historyResponses.flatMap((item) => item.data);
 
   return (
     <div className="flex flex-col gap-4 w-full">
