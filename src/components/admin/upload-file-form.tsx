@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { http } from "../../lib/http";
@@ -8,16 +8,6 @@ import { ErrorMessage } from "../ui/error-message";
 import { LoadingSpinner } from "../ui/loading-spinner";
 import { MultiSelect, Option } from "react-multi-select-component";
 import { selectLocalValues } from "../../lib/select-local";
-
-type CategoryItem = {
-  id: number;
-  name: string; 
-}
-type CategoriesResponse = {
-  error: boolean;
-  message: string;
-  data: CategoryItem[];
-}
 
 export function UploadFileForm() {
   return (
@@ -74,15 +64,15 @@ function Form() {
     mutate(formData);
   }
 
-  if(isLoading) return <LoadingSpinner />;
-  if(isError || !categories || categories.error) return <ErrorMessage />;
-
-  const catOptions = categories.data.map((item) => {
+  const catOptions = useMemo(() => categories?.data.map((item) => {
     return {
       label: item.name,
       value: item.id,
     };
-  });
+  }), [categories]);
+
+  if(isLoading) return <LoadingSpinner />;
+  if(isError || !categories || categories.error) return <ErrorMessage />;
 
   return (
     <form className="flex flex-col gap-3" onSubmit={onSubmit}>
@@ -102,13 +92,13 @@ function Form() {
           Завантажити
         </Button>
       </div>
-      {!!catOptions.length &&
+      {(!!catOptions && !!catOptions.length) &&
         <MultiSelect
           labelledBy="Select categories"
           value={selectedCategories}
           options={catOptions}
           onChange={setSelectedCategories}
-          overrideStrings={selectLocalValues("Вибрати категорії")}
+          overrideStrings={selectLocalValues("Вибрати категорії", catOptions)}
         />
       }
     </form>

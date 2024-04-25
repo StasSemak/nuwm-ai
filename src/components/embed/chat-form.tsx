@@ -17,23 +17,12 @@ type ChatQuestion = {
   chatId: string;
   categoryId: number;
 };
-type ChatResponse = {
-  error: boolean;
-  message: string;
+type ChatResponse = BaseResponse & {
   data: string;
 };
 type ChatMessage = {
   from: "user" | "server";
   data: string;
-};
-type CategoryItem = {
-  id: number;
-  name: string; 
-};
-type CategoriesResponse = {
-  error: boolean;
-  message: string;
-  data: CategoryItem[];
 };
 
 const chatId = nanoid();

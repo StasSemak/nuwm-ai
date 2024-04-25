@@ -4,37 +4,19 @@ import { http } from "../../lib/http";
 import { LoadingSpinner } from "../ui/loading-spinner";
 import { ErrorMessage } from "../ui/error-message";
 import { formatDate } from "../../lib/utils";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { MultiSelect, Option } from "react-multi-select-component";
 import { selectLocalValues } from "../../lib/select-local";
 import { Button } from "../ui/button";
 import { Loader2, X as XIcon } from "lucide-react";
 
-type FileItem = {
-  id: number;
-  name: string;
-  createdAt: string;
-};
-type CategoryItem = {
-  id: number;
-  name: string;
-};
-type FileResponse = {
-  error: boolean;
-  message: string;
-  data: FileItem & {
-    categories: CategoryItem[];
-  };
-};
-type CategoriesResponse = {
-  error: boolean;
-  message: string;
-  data: CategoryItem[];
+type FileResponse = BaseResponse & {
+  data: FileItem;
 };
 type UpdateCategoriesPayload = {
   fileId: number;
   categoryIds: number[];
-}
+};
 
 export function FileView() {
   const { id } = useParams();
@@ -60,7 +42,7 @@ export function FileView() {
         <p className="text-zinc-950">{formatDate(file.createdAt)}</p>
       </div>
       <Categories categories={file.categories} fileId={file.id} refetch={refetch}/>
-      <AddCategories categories={file.categories} fileId={file.id}/>
+      <AddCategories categories={file.categories} fileId={file.id} refetch={refetch}/>
     </div>
   )
 }
@@ -122,16 +104,16 @@ function DeleteCategoryButton({category, fileId, refetch}: CatItemProps) {
   );
 }
 
-function AddCategories({categories, fileId}: {categories: CategoryItem[], fileId: number}) {
+function AddCategories({categories, fileId, refetch}: {categories: CategoryItem[], fileId: number, refetch: any}) {
   return(
     <div className="flex flex-col gap-2 w-full mt-3">
       <h2 className="text-xl text-zinc-950">Додати категорії</h2>
-      <Form categories={categories} fileId={fileId}/>
+      <Form categories={categories} fileId={fileId} refetch={refetch}/>
     </div>
   )
 }
 
-function Form({categories, fileId}: {categories: CategoryItem[], fileId: number}) {
+function Form({categories, fileId, refetch}: {categories: CategoryItem[], fileId: number, refetch: any}) {
   const [selectedCategories, setSelectedCategories] = useState<Option[]>([]);
 
   const { data, isError, isLoading } = useQuery({
@@ -149,7 +131,8 @@ function Form({categories, fileId}: {categories: CategoryItem[], fileId: number}
         await http.post("/categories/assign", payload);
 
         alert("Категорії успішно оновлено!");
-        window.location.reload();
+        refetch();
+        setSelectedCategories([]);
       }
       catch {
         alert("Виникла помилка! Спробуйте ще раз");
@@ -169,10 +152,7 @@ function Form({categories, fileId}: {categories: CategoryItem[], fileId: number}
     });
   }
 
-  if(isLoading) return <LoadingSpinner />;
-  if(isError || !data || data.error) return <ErrorMessage />;
-
-  const catOptions = data.data.map((item) => {
+  const catOptions = useMemo(() => data?.data.map((item) => {
     let isDisabled = false;
     for (let i = 0; i < categories.length; i++) {
       if(categories[i].id === item.id) isDisabled = true;
@@ -182,9 +162,12 @@ function Form({categories, fileId}: {categories: CategoryItem[], fileId: number}
       value: item.id,
       disabled: isDisabled,
     };
-  });
+  }), [data, categories]);
 
-  if(catOptions.length === 0) return null;
+  if(isLoading) return <LoadingSpinner />;
+  if(isError || !data || data.error) return <ErrorMessage />;
+
+  if(!catOptions || catOptions.length === 0) return null;
 
   return(
     <form className="flex gap-2 w-full" onSubmit={onSubmit}>
@@ -193,7 +176,7 @@ function Form({categories, fileId}: {categories: CategoryItem[], fileId: number}
         value={selectedCategories}
         options={catOptions}
         onChange={setSelectedCategories}
-        overrideStrings={selectLocalValues("Вибрати категорії")}
+        overrideStrings={selectLocalValues("Вибрати категорії", catOptions)}
         className="flex-grow"
       />
       <Button type="submit" disabled={isPending || selectedCategories.length === 0}>

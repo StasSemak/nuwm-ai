@@ -4,16 +4,6 @@ import { LoadingSpinner } from "../../ui/loading-spinner";
 import { ErrorMessage } from "../../ui/error-message";
 import { Trash } from "lucide-react";
 
-type CategoryItem = {
-  id: number;
-  name: string;
-};
-type CategoriesListResponse = {
-  error: boolean;
-  message: string;
-  data: CategoryItem[];
-};
-
 export function CategoriesList() {
   return (
     <div className="flex flex-col gap-4 w-full">
@@ -27,7 +17,7 @@ function List() {
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["get-all-categories"],
     queryFn: async () => {
-      const { data } = await http.get<CategoriesListResponse>("/categories");
+      const { data } = await http.get<CategoriesResponse>("/categories");
       return data;
     },
   });
