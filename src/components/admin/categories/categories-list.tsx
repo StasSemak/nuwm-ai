@@ -2,7 +2,8 @@ import { useQuery } from "@tanstack/react-query";
 import { http } from "../../../lib/http";
 import { LoadingSpinner } from "../../ui/loading-spinner";
 import { ErrorMessage } from "../../ui/error-message";
-import { Trash } from "lucide-react";
+import { ExternalLinkIcon, Trash } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export function CategoriesList() {
   return (
@@ -44,7 +45,12 @@ export function CategoryCard({
   return (
     <div className="flex items-center px-3 justify-between rounded-md h-14 bg-zinc-100">
       <p className="text-zinc-950 font-bold">{category.name}</p>
-      <DeleteButton id={category.id} name={category.name} refetch={refetch} />
+      <div className="flex gap-1">
+        <DeleteButton id={category.id} name={category.name} refetch={refetch} />
+        <Link to={`view/${category.id}`} className="inline-flex items-center justify-center rounded-md text-sm transition-all bg-transparent hover:bg-zinc-200 h-9 px-2 flex-shrink-0">
+          <ExternalLinkIcon className="stroke-main size-4"/>
+        </Link>
+      </div>
     </div>
   );
 }

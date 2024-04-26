@@ -15,6 +15,10 @@ const headerNavItems = [
     name: "Історія",
     slug: "history",
   },
+  {
+    name: "Модель",
+    slug: "model",
+  }
 ];
 
 export function AdminHeader() {
