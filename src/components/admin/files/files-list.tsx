@@ -5,6 +5,7 @@ import { ErrorMessage } from "../../ui/error-message";
 import { ExternalLinkIcon, Trash } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Badge } from "../../ui/badge";
+import { useCustomToast } from "../../../hooks/use-custom-toast";
 
 export function FilesList() {
   return (
@@ -72,6 +73,8 @@ function DeleteButton({
   name: string;
   refetch: any;
 }) {
+  const toast = useCustomToast();
+
   function deleteHandler() {
     if (
       !confirm(
@@ -84,11 +87,17 @@ function DeleteButton({
     http
       .delete(`/files/${id}`)
       .then(() => {
-        alert("Операція успішна!");
+        toast({
+          type: "error",
+          content: "Операція успішна!",
+        });
         refetch();
       })
       .catch(() => {
-        alert("Виникла помилка! Спробуйте ще раз");
+        toast({
+          type: "error",
+          content: "Виникла помилка! Спробуйте ще раз",
+        });
       });
   }
 

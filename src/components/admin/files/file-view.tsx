@@ -9,6 +9,7 @@ import { MultiSelect, Option } from "react-multi-select-component";
 import { selectLocalValues } from "../../../lib/select-local";
 import { Button } from "../../ui/button";
 import { Loader2, X as XIcon } from "lucide-react";
+import { useCustomToast } from "../../../hooks/use-custom-toast";
 
 type FileResponse = BaseResponse & {
   data: FileItem;
@@ -71,6 +72,8 @@ function CategoryListItem({category, fileId, refetch}: CatItemProps) {
   )
 }
 function DeleteCategoryButton({category, fileId, refetch}: CatItemProps) {
+  const toast = useCustomToast();
+
   function deleteHandler() {
     if (
       !confirm(
@@ -86,11 +89,17 @@ function DeleteCategoryButton({category, fileId, refetch}: CatItemProps) {
         categoryId: category.id,
       })
       .then(() => {
-        alert("Операція успішна!");
+        toast({
+          type: "success",
+          content: "Операція успішна!",
+        });
         refetch();
       })
       .catch(() => {
-        alert("Виникла помилка! Спробуйте ще раз");
+        toast({
+          type: "error",
+          content: "Виникла помилка! Спробуйте ще раз",
+        });
       });
   }
 
@@ -115,6 +124,7 @@ function AddCategories({categories, fileId, refetch}: {categories: CategoryItem[
 
 function Form({categories, fileId, refetch}: {categories: CategoryItem[], fileId: number, refetch: any}) {
   const [selectedCategories, setSelectedCategories] = useState<Option[]>([]);
+  const toast = useCustomToast();
 
   const { data, isError, isLoading } = useQuery({
     queryKey: ["categories"],
@@ -130,12 +140,18 @@ function Form({categories, fileId, refetch}: {categories: CategoryItem[], fileId
       try {
         await http.post("/categories/assign", payload);
 
-        alert("Категорії успішно оновлено!");
+        toast({
+          type: "success",
+          content: "Категорії успішно оновлено!",
+        });
         refetch();
         setSelectedCategories([]);
       }
       catch {
-        alert("Виникла помилка! Спробуйте ще раз");
+        toast({
+          type: "error",
+          content: "Виникла помилка! Спробуйте ще раз",
+        });
       }
     },
   });
