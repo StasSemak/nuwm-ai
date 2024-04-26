@@ -1,4 +1,4 @@
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import { http } from "../../../lib/http";
 import { LoadingSpinner } from "../../ui/loading-spinner";
 import { ErrorMessage } from "../../ui/error-message";
@@ -13,6 +13,7 @@ import {
 import { formatDate } from "../../../lib/utils";
 import { MDXContent } from "../../mdx";
 import { Checkbox } from "../../ui/checkbox";
+import { useNavigate } from "react-router-dom";
 
 const ITEMS_PER_PAGE = 30;
 
@@ -40,6 +41,8 @@ export function HistoryList() {
 function FilterForm() {
   const [isUnansweredOnly, setIsUnansweredOnly] = useState<boolean>(false);
   const [isQuestionsOnly, setIsQuestionsOnly] = useState<boolean>(false);
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -61,8 +64,10 @@ function FilterForm() {
     if(isQuestionsOnly) params.set("questionsOnly", isQuestionsOnly.toString());
     else params.delete("questionsOnly");
 
-    window.history.replaceState({}, "", `${window.location.pathname}?${params}`);
-    window.location.reload();
+    navigate(`?${params}`);
+    queryClient.invalidateQueries({
+      queryKey: ["infinite-history-query"],
+    });
   }
 
   return(
