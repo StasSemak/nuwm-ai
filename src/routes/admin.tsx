@@ -6,6 +6,7 @@ import { FileView } from "../components/admin/files/file-view";
 import { HistoryList } from "../components/admin/history/history-list";
 import { AdminHome } from "../components/admin/home";
 import { CategoryView } from "../components/admin/categories/category-view";
+import { ModelView } from "../components/admin/model/model-view";
 
 export function Admin() {
   return(
@@ -45,4 +46,10 @@ export function AdminHistory() {
   return (
     <HistoryList />
   );
+}
+
+export function AdminModel() {
+  return(
+    <ModelView />
+  )
 }
