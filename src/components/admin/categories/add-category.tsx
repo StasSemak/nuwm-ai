@@ -1,9 +1,10 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { http } from "../../../lib/http";
 import { Input } from "../../ui/input";
 import { Button } from "../../ui/button";
 import { Loader2 } from "lucide-react";
+import { useCustomToast } from "../../../hooks/use-custom-toast";
 
 type CreateCategoryPayload = {
   name: string;
@@ -20,6 +21,8 @@ export function AddCategory() {
 
 function Form() {
   const [name, setName] = useState<string>("");
+  const toast = useCustomToast();
+  const queryClient = useQueryClient();
 
   const { mutate, isPending } = useMutation({
     mutationKey: ["create-category"],
@@ -27,10 +30,18 @@ function Form() {
       try {
         await http.post("/categories", payload);
 
-        alert(`Категорію '${name}' успішно створено!`);
-        window.location.reload();
+        toast({
+          type: "success",
+          content: `Категорію '${name}' успішно створено!`,
+        })
+        queryClient.invalidateQueries({
+          queryKey: ["get-all-categories"],
+        })
       } catch {
-        alert("Виникла помилка! Спробуйте ще раз");
+        toast({
+          type: "error",
+          content: "Виникла помилка! Спробуйте ще раз",
+        })
       }
     },
   });

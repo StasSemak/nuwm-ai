@@ -2,12 +2,13 @@ import { useMemo, useState } from "react";
 import { Button } from "../../ui/button";
 import { Input } from "../../ui/input";
 import { http } from "../../../lib/http";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import { ErrorMessage } from "../../ui/error-message";
 import { LoadingSpinner } from "../../ui/loading-spinner";
 import { MultiSelect, Option } from "react-multi-select-component";
 import { selectLocalValues } from "../../../lib/select-local";
+import { useCustomToast } from "../../../hooks/use-custom-toast";
 
 export function UploadFileForm() {
   return (
@@ -21,6 +22,8 @@ export function UploadFileForm() {
 function Form() {
   const [file, setFile] = useState<File | undefined>();
   const [selectedCategories, setSelectedCategories] = useState<Option[]>([]);
+  const toast = useCustomToast();
+  const queryClient = useQueryClient();
 
   const { data: categories, isError, isLoading } = useQuery({
     queryKey: ["categories"],
@@ -40,11 +43,19 @@ function Form() {
           },
         });
 
-        alert("Файл успішно завантажено!");
-        window.location.reload();
+        toast({
+          type: "success",
+          content: "Файл успішно завантажено!",
+        });
+        queryClient.invalidateQueries({
+          queryKey: ["get-all-files"],
+        });
       }
       catch {
-        alert("Виникла помилка! Спробуйте ще раз");
+        toast({
+          type: "error",
+          content: "Виникла помилка! Спробуйте ще раз",
+        });
       }
     },
   });

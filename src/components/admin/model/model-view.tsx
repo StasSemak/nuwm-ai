@@ -6,6 +6,7 @@ import { Button } from "../../ui/button";
 import { Loader2 } from "lucide-react";
 import { Select } from "../../ui/select";
 import { useRef, useState } from "react";
+import { useCustomToast } from "../../../hooks/use-custom-toast";
 
 type ModelItem = {
   id: number;
@@ -47,6 +48,7 @@ export function ModelView() {
 function SetModel({models, refetch, currentModel}: {models: ModelItem[], refetch: any, currentModel: ModelItem}) {
   const [modelId, setModelId] = useState<number>(-1);
   const selectRef = useRef<HTMLSelectElement>(null);
+  const toast = useCustomToast();
  
   const { mutate, isPending } = useMutation({
     mutationKey: ["set-model"],
@@ -54,13 +56,19 @@ function SetModel({models, refetch, currentModel}: {models: ModelItem[], refetch
       try {
         await http.post("/answer/models", payload);
 
-        alert("Модель успішно оновлено!");
+        toast({
+          type: "success",
+          content: "Модель успішно оновлено!",
+        });
         refetch();
         setModelId(-1);
         if(selectRef.current) selectRef.current.value = "-1"; 
       }
       catch {
-        alert("Виникла помилка! Спробуйте ще раз");
+        toast({
+          type: "error",
+          content: "Виникла помилка! Спробуйте ще раз",
+        });
       }
     },
   });

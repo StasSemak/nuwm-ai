@@ -4,6 +4,7 @@ import { LoadingSpinner } from "../../ui/loading-spinner";
 import { ErrorMessage } from "../../ui/error-message";
 import { ExternalLinkIcon, Trash } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useCustomToast } from "../../../hooks/use-custom-toast";
 
 export function CategoriesList() {
   return (
@@ -64,6 +65,8 @@ function DeleteButton({
   name: string;
   refetch: any;
 }) {
+  const toast = useCustomToast();
+
   function deleteHandler() {
     if (
       !confirm(
@@ -76,11 +79,17 @@ function DeleteButton({
     http
       .delete(`/categories/${id}`)
       .then(() => {
-        alert("Операція успішна!");
+        toast({
+          type: "success",
+          content: "Операція успішна!",
+        });
         refetch();
       })
       .catch(() => {
-        alert("Виникла помилка! Спробуйте ще раз");
+        toast({
+          type: "error",
+          content: "Виникла помилка! Спробуйте ще раз",
+        });
       });
   }
 
