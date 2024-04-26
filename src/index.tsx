@@ -5,6 +5,7 @@ import { Index } from "./routes";
 import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
 import { Admin, AdminCategories, AdminCategory, AdminFile, AdminFiles, AdminHistory, AdminModel } from "./routes/admin";
 import { AdminLayout } from "./routes/layout";
+import { Toaster } from "react-hot-toast";
 
 const queryClient = new QueryClient();
 
@@ -27,6 +28,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
           <Route path="model" element={<AdminModel />} />
         </Route>
       </Routes>
+      <Toaster position="top-right" containerStyle={{top: 70}}/>
     </BrowserRouter>
   </QueryClientProvider>
 );
