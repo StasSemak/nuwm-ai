@@ -1,16 +1,14 @@
 import * as AlertDialog from "@radix-ui/react-alert-dialog";
 import { Button } from "./button";
-import { Loader2 } from "lucide-react";
 
 type DialogProps = {
   trigger: React.ReactNode;
   title: React.ReactNode;
   description: React.ReactNode;
   onActionClick: () => void;
-  isLoading?: boolean;
 };
 
-export function Dialog({ trigger, description, title, onActionClick, isLoading }: DialogProps) {
+export function Dialog({ trigger, description, title, onActionClick }: DialogProps) {
   return (
     <AlertDialog.Root>
       <AlertDialog.Trigger asChild>{trigger}</AlertDialog.Trigger>
@@ -28,10 +26,7 @@ export function Dialog({ trigger, description, title, onActionClick, isLoading }
               <Button className="bg-transparent text-main hover:bg-main/10 border border-main">Скасувати</Button>
             </AlertDialog.Cancel>
             <AlertDialog.Action asChild>
-              <Button onClick={onActionClick} disabled={isLoading}>
-                {isLoading && (
-                  <Loader2 className="stroke-zinc-100 h-4 w-4 animate-spin mr-2" />
-                )}
+              <Button onClick={onActionClick}>
                 Підтвердити
               </Button>
             </AlertDialog.Action>
