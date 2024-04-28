@@ -10,6 +10,7 @@ import { selectLocalValues } from "../../../lib/select-local";
 import { Button } from "../../ui/button";
 import { Loader2, X as XIcon } from "lucide-react";
 import { useCustomToast } from "../../../hooks/use-custom-toast";
+import { Dialog } from "../../ui/dialog";
 
 type FileResponse = BaseResponse & {
   data: FileItem;
@@ -75,14 +76,6 @@ function DeleteCategoryButton({category, fileId, refetch}: CatItemProps) {
   const toast = useCustomToast();
 
   function deleteHandler() {
-    if (
-      !confirm(
-        `Ви впевнені? Категорію '${category.name}' буде видалено з цього файлу!`
-      )
-    ) {
-      return;
-    }
-
     http
       .post(`/categories/remove`, {
         fileId: fileId,
@@ -104,12 +97,19 @@ function DeleteCategoryButton({category, fileId, refetch}: CatItemProps) {
   }
 
   return (
-    <button
-      className="inline-flex items-center justify-center rounded-md text-sm transition-all bg-transparent hover:bg-secondary/10 p-1 flex-shrink-0"
-      onClick={deleteHandler}
-    >
-      <XIcon className="stroke-zinc-700 size-4" />
-    </button>
+    <Dialog
+      trigger={
+        <button
+          className="inline-flex items-center justify-center rounded-md text-sm transition-all bg-transparent hover:bg-secondary/10 p-1 flex-shrink-0"
+          onClick={deleteHandler}
+        >
+          <XIcon className="stroke-zinc-700 size-4" />
+        </button>
+      }
+      title={"Ви впевнені?"}
+      description={`Категорію '${category.name}' буде видалено з цього файлу!`}
+      onActionClick={deleteHandler}
+    />
   );
 }
 

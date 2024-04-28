@@ -6,6 +6,7 @@ import { ExternalLinkIcon, Trash } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Badge } from "../../ui/badge";
 import { useCustomToast } from "../../../hooks/use-custom-toast";
+import { Dialog } from "../../ui/dialog";
 
 export function FilesList() {
   return (
@@ -76,14 +77,6 @@ function DeleteButton({
   const toast = useCustomToast();
 
   function deleteHandler() {
-    if (
-      !confirm(
-        `Ви впевнені? Файл ${name} буде видалено без можливості відновлення!`
-      )
-    ) {
-      return;
-    }
-
     http
       .delete(`/files/${id}`)
       .then(() => {
@@ -102,11 +95,18 @@ function DeleteButton({
   }
 
   return (
-    <button
-      className="inline-flex items-center justify-center rounded-md text-sm transition-all bg-transparent hover:bg-zinc-200 h-9 px-2 flex-shrink-0"
-      onClick={deleteHandler}
-    >
-      <Trash className="stroke-main size-4" />
-    </button>
+    <Dialog
+      trigger={
+        <button
+          className="inline-flex items-center justify-center rounded-md text-sm transition-all bg-transparent hover:bg-zinc-200 h-9 px-2 flex-shrink-0"
+          onClick={deleteHandler}
+        >
+          <Trash className="stroke-main size-4" />
+        </button>
+      }
+      title="Ви впевнені?"
+      description={`Файл ${name} буде видалено без можливості відновлення!`}
+      onActionClick={deleteHandler}
+    />
   );
 }

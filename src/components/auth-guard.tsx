@@ -6,6 +6,7 @@ import { ErrorMessage } from "./ui/error-message";
 import { useState } from "react";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
+import { Dialog } from "./ui/dialog";
 
 type TokenResponse = BaseResponse & {
   data: {
@@ -103,19 +104,18 @@ export function Logout() {
   const [cookies, _, removeCookie] = useCookies(["authToken"]);
 
   function onClick() {
-    if (
-      !confirm(
-        "Вийти з адмінпанелі? Для доступу потрібно буде знову ввести пароль"
-      )
-    ) {
-      return;
-    }
-
     if (!cookies.authToken) return;
 
     removeCookie("authToken");
     window.location.reload();
   }
 
-  return <Button onClick={onClick}>Вийти</Button>;
+  return( 
+    <Dialog 
+      trigger={<Button>Вийти</Button>}
+      title={"Вийти з адмінпанелі?"}
+      description={"Ви впевнені? Для повторного доступу потрібно буде знову ввести пароль"}
+      onActionClick={onClick}
+    />
+  )
 }

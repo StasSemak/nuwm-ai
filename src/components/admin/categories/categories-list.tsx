@@ -5,6 +5,7 @@ import { ErrorMessage } from "../../ui/error-message";
 import { ExternalLinkIcon, Trash } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useCustomToast } from "../../../hooks/use-custom-toast";
+import { Dialog } from "../../ui/dialog";
 
 export function CategoriesList() {
   return (
@@ -68,14 +69,6 @@ function DeleteButton({
   const toast = useCustomToast();
 
   function deleteHandler() {
-    if (
-      !confirm(
-        `Ви впевнені? Категорію '${name}' буде видалено без можливості відновлення!`
-      )
-    ) {
-      return;
-    }
-
     http
       .delete(`/categories/${id}`)
       .then(() => {
@@ -94,11 +87,17 @@ function DeleteButton({
   }
 
   return (
-    <button
-      className="inline-flex items-center justify-center rounded-md text-sm transition-all bg-transparent hover:bg-zinc-200 h-9 px-2 flex-shrink-0"
-      onClick={deleteHandler}
-    >
-      <Trash className="stroke-main h-4 w-4" />
-    </button>
+    <Dialog
+      trigger={
+        <button
+          className="inline-flex items-center justify-center rounded-md text-sm transition-all bg-transparent hover:bg-zinc-200 h-9 px-2 flex-shrink-0"
+        >
+          <Trash className="stroke-main h-4 w-4" />
+        </button>
+      }
+      title={"Ви впевнені?"}
+      description={`Категорію '${name}' буде видалено без можливості відновлення!`}
+      onActionClick={deleteHandler}
+    />
   );
 }
