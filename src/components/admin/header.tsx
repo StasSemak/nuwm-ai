@@ -18,6 +18,10 @@ const headerNavItems = [
   {
     name: "Модель",
     slug: "model",
+  },
+  {
+    name: "Запити",
+    slug: "requests",
   }
 ];
 
