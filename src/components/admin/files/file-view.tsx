@@ -101,7 +101,6 @@ function DeleteCategoryButton({category, fileId, refetch}: CatItemProps) {
       trigger={
         <button
           className="inline-flex items-center justify-center rounded-md text-sm transition-all bg-transparent hover:bg-secondary/10 p-1 flex-shrink-0"
-          onClick={deleteHandler}
         >
           <XIcon className="stroke-zinc-700 size-4" />
         </button>
