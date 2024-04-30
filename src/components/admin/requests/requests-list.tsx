@@ -8,14 +8,7 @@ import { CheckCircle2, ExternalLinkIcon, Trash, XCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 import { formatDate } from "../../../lib/utils";
 
-type RequestItem = {
-  id: number;
-  contactNumber: string;
-  chatId: string;
-  createdAt: string;
-  isResolved: boolean;
-}
-type RequestResponse = BaseResponse & {
+type RequestsResponse = BaseResponse & {
   data: RequestItem[];
 }
 
@@ -32,7 +25,7 @@ function List() {
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["get-all-requests"],
     queryFn: async () => {
-      const { data } = await http.get<RequestResponse>("/requests");
+      const { data } = await http.get<RequestsResponse>("/requests");
       return data;
     },
   });
@@ -42,6 +35,7 @@ function List() {
 
   return (
     <div className="flex flex-col gap-3 w-full">
+      {data.data.length === 0 && <p className="text-center text-xl font-bold text-main">Запитів не знайдено</p>}
       {data.data.map((item) => (
         <RequestCard key={item.id} request={item} refetch={refetch} />
       ))}
