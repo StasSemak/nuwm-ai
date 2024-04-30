@@ -2,16 +2,20 @@ import { useQuery } from "@tanstack/react-query";
 import { http } from "../../../lib/http";
 import { LoadingSpinner } from "../../ui/loading-spinner";
 import { ErrorMessage } from "../../ui/error-message";
-import { ExternalLinkIcon, Trash } from "lucide-react";
-import { Link } from "react-router-dom";
-import { Badge } from "../../ui/badge";
 import { useCustomToast } from "../../../hooks/use-custom-toast";
 import { Dialog } from "../../ui/dialog";
+import { CheckCircle2, ExternalLinkIcon, Trash, XCircle } from "lucide-react";
+import { Link } from "react-router-dom";
+import { formatDate } from "../../../lib/utils";
 
-export function FilesList() {
+type RequestsResponse = BaseResponse & {
+  data: RequestItem[];
+}
+
+export function RequestsList() {
   return (
     <div className="flex flex-col gap-4 w-full">
-      <h2 className="text-2xl text-zinc-950 mb-1">Список файлів</h2>
+      <h2 className="text-2xl text-zinc-950 mb-1">Запити</h2>
       <List />
     </div>
   );
@@ -19,9 +23,9 @@ export function FilesList() {
 
 function List() {
   const { data, isLoading, isError, refetch } = useQuery({
-    queryKey: ["get-all-files"],
+    queryKey: ["get-all-requests"],
     queryFn: async () => {
-      const { data } = await http.get<FilesResponse>("/files");
+      const { data } = await http.get<RequestsResponse>("/requests");
       return data;
     },
   });
@@ -31,23 +35,25 @@ function List() {
 
   return (
     <div className="flex flex-col gap-3 w-full">
+      {data.data.length === 0 && <p className="text-center text-xl font-bold text-main">Запитів не знайдено</p>}
       {data.data.map((item) => (
-        <FileCard key={item.id} file={item} refetch={refetch} />
+        <RequestCard key={item.id} request={item} refetch={refetch} />
       ))}
     </div>
   );
 }
 
-export function FileCard({ file, refetch }: { file: FileItem; refetch: any }) {
+export function RequestCard({ request, refetch }: { request: RequestItem; refetch: any }) {
   return (
     <div className="flex flex-col md:flex-row items-start md:items-center p-3 justify-between rounded-md bg-zinc-100">
       <div className="flex gap-3 items-start md:items-center flex-col md:flex-row">
-        <p className="text-zinc-950 font-bold">{file.name}</p>
-        <CategoriesBadges categories={file.categories}/>
+        <p className="text-zinc-950 font-bold">{request.contactNumber}</p>
+        <p className="text-sm mt-0.5">{formatDate(request.createdAt)}</p>
       </div>
-      <div className="flex gap-1 mt-2 md:mt-0">
-        <DeleteButton id={file.id} name={file.name} refetch={refetch} />
-        <Link to={`/admin/files/view/${file.id}`} className="inline-flex items-center justify-center rounded-md text-sm transition-all bg-transparent hover:bg-zinc-200 h-9 px-2 flex-shrink-0">
+      <div className="flex gap-1 mt-2 md:mt-0 items-center">
+        <ListItemStatus isResolved={request.isResolved} />
+        <DeleteButton id={request.id} contactNumber={request.contactNumber} refetch={refetch} />
+        <Link to={`view/${request.id}`} className="inline-flex items-center justify-center rounded-md text-sm transition-all bg-transparent hover:bg-zinc-200 h-9 px-2 flex-shrink-0">
           <ExternalLinkIcon className="stroke-main size-4"/>
         </Link>
       </div>
@@ -55,30 +61,33 @@ export function FileCard({ file, refetch }: { file: FileItem; refetch: any }) {
   );
 }
 
-function CategoriesBadges({categories}: {categories: CategoryItem[]}) {
-  return (
-    <div className="flex gap-2">
-      {categories.map((item, index) => (
-        <Badge key={`${item.id}-${index}`}>{item.name}</Badge>
-      ))}
+function ListItemStatus({ isResolved }: { isResolved: boolean }) {
+  return(
+    <div className="flex gap-1.5 items-center mr-5">
+      {isResolved ? 
+        <CheckCircle2 className="size-4 stroke-emerald-700" />
+      :
+        <XCircle className="size-4 stroke-red-700" />
+      }
+      <p className="text-sm mt-0.5 font-bold">{isResolved ? "Відповідь дана" : "Без відповіді"}</p>
     </div>
   )
 }
 
 function DeleteButton({
   id,
-  name,
+  contactNumber,
   refetch,
 }: {
   id: number;
-  name: string;
+  contactNumber: string;
   refetch: any;
 }) {
   const toast = useCustomToast();
 
   function deleteHandler() {
     http
-      .delete(`/files/${id}`)
+      .delete(`/requests/${id}`)
       .then(() => {
         toast({
           type: "error",
@@ -104,7 +113,7 @@ function DeleteButton({
         </button>
       }
       title="Ви впевнені?"
-      description={`Файл ${name} буде видалено без можливості відновлення!`}
+      description={`Запит за номером ${contactNumber} буде видалено без можливості відновлення!`}
       onActionClick={deleteHandler}
     />
   );

@@ -17,18 +17,6 @@ import { useNavigate } from "react-router-dom";
 
 const ITEMS_PER_PAGE = 30;
 
-type HistoryItem = {
-  id: number;
-  chatId: string;
-  role: string;
-  content: string;
-  createdAt: string;
-  isAnswered: boolean;
-};
-type HistoryResponse = BaseResponse & {
-  data: HistoryItem[];
-};
-
 export function HistoryList() {
   return (
     <div className="flex flex-col gap-5 w-full">
@@ -136,7 +124,7 @@ function List() {
   return (
     <div className="flex flex-col gap-4 w-full">
       {historyData.map((item, index) => (
-        <ListItem key={`${index} ${item.id}`} {...item} />
+        <HistoryListItem key={`${index} ${item.id}`} {...item} />
       ))}
       <FetchStatusBar
         fetchNextPage={fetchNextPage}
@@ -164,7 +152,7 @@ function FetchStatusBar(props: FetchStatusBarProps) {
   );
 }
 
-function ListItem(props: HistoryItem) {
+export function HistoryListItem(props: HistoryItem) {
   return (
     <div className="w-full flex flex-col gap-2 bg-zinc-100 p-3 rounded-md">
       <ListItemHeader {...props} />
