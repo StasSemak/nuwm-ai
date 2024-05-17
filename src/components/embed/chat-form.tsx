@@ -18,7 +18,10 @@ type ChatQuestion = {
   categoryId: number;
 };
 type ChatResponse = BaseResponse & {
-  data: string;
+  data: {
+    data: string;
+    isAnswered: boolean;
+  };
 };
 type ChatMessage = {
   from: "user" | "server";
@@ -161,7 +164,7 @@ function ResponseView(props: ResponseViewProps) {
         ...prev,
         {
           from: "server",
-          data: data.data,
+          data: data.data.data,
         },
       ]);
     }
