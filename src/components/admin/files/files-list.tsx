@@ -81,7 +81,7 @@ function DeleteButton({
       .delete(`/files/${id}`)
       .then(() => {
         toast({
-          type: "error",
+          type: "success",
           content: "Операція успішна!",
         });
         refetch();
