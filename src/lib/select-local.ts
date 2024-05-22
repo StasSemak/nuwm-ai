@@ -1,7 +1,7 @@
 import { Option } from "react-multi-select-component";
 
 export function selectLocalValues(placeholder: string, options: Option[]) {
-    const allValues = options.filter((item) => !item.disabled).map((item) => item.value);
+    const allValues = options.filter((item) => !item.disabled).map((item) => item.label);
     const allValuesStr = allValues.join(", ");
 
     return {
