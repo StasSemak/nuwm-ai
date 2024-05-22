@@ -9,14 +9,13 @@ import { CategoryView } from "../components/admin/categories/category-view";
 import { ModelView } from "../components/admin/model/model-view";
 import { RequestsList } from "../components/admin/requests/requests-list";
 import { RequestView } from "../components/admin/requests/request-view";
+import { BaseRoute, ListWithViews } from "./templates";
 
 export function Admin() {
-  return(
-    <AdminHome />
-  )
+  return <AdminHome />;
 }
 
-export function AdminFiles() {
+function AdminFiles() {
   return (
     <>
       <UploadFileForm />
@@ -24,45 +23,66 @@ export function AdminFiles() {
     </>
   );
 }
-export function AdminFile() {
-  return(
-    <FileView />
-  )
+function AdminFile() {
+  return <FileView />;
+}
+export function AdminFilesRoute() {
+  return (
+    <ListWithViews
+      baseSlug="files"
+      listComponent={<AdminFiles />}
+      viewComponent={<AdminFile />}
+    />
+  );
 }
 
-export function AdminCategories() {
-  return(
+function AdminCategories() {
+  return (
     <>
       <AddCategory />
       <CategoriesList />
     </>
-  )
+  );
 }
-export function AdminCategory() {
-  return(
-    <CategoryView />
-  )
+function AdminCategory() {
+  return <CategoryView />;
 }
-
-export function AdminHistory() {
+export function AdminCategoriesRoute() {
   return (
-    <HistoryList />
+    <ListWithViews
+      baseSlug="categories"
+      listComponent={<AdminCategories />}
+      viewComponent={<AdminCategory />}
+    />
   );
 }
 
-export function AdminModel() {
-  return(
-    <ModelView />
-  )
+function AdminHistory() {
+  return <HistoryList />;
+}
+export function AdminHistoryRoute() {
+  return <BaseRoute slug="history" component={<AdminHistory />} />;
 }
 
-export function AdminRequests() {
-  return(
-    <RequestsList />
-  )
+export function AdminModel() {
+  return <ModelView />;
 }
-export function AdminRequest() {
-  return(
-    <RequestView />
-  )
+export function AdminModelRoute() {
+  return <BaseRoute slug="model" component={<AdminModel />} />;
+}
+
+function AdminRequests() {
+  return <RequestsList />;
+}
+function AdminRequest() {
+  return <RequestView />;
+}
+export function AdminRequestsRoute() {
+  return (
+    <ListWithViews
+      baseSlug="requests"
+      listComponent={<AdminRequests />}
+      viewComponent={<AdminRequest />}
+    />
+  );
 }
