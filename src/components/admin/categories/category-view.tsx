@@ -36,7 +36,7 @@ export function CategoryView() {
 
 function FilesList({categoryId}: {categoryId: number}) {
   const { data, isLoading, isError, refetch } = useQuery({
-    queryKey: ["get-files-by-category"],
+    queryKey: [`get-files-by-category-${categoryId}`],
     queryFn: async () => {
       const { data } = await http.get<FilesResponse>(`/files/category/${categoryId}`);
       return data;
