@@ -6,6 +6,7 @@ import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
 import { Admin, AdminCategories, AdminCategory, AdminFile, AdminFiles, AdminHistory, AdminModel, AdminRequest, AdminRequests } from "./routes/admin";
 import { AdminLayout } from "./routes/layout";
 import { Toaster } from "react-hot-toast";
+import { NotFound } from "./routes/not-found";
 
 const queryClient = new QueryClient();
 
@@ -31,6 +32,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
           <Route path="history" element={<AdminHistory />} />
           <Route path="model" element={<AdminModel />} />
         </Route>
+        <Route path="*" element={<NotFound />}/>
       </Routes>
       <Toaster position="top-right" containerStyle={{top: 70}}/>
     </BrowserRouter>
