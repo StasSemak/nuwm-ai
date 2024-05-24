@@ -11,6 +11,7 @@ import { MDXContent } from "../mdx";
 import { nanoid } from "nanoid";
 import { Select } from "../ui/select";
 import { cn } from "../../lib/utils";
+import { Bot as BotIcon } from "lucide-react";
 
 type ChatQuestion = {
   question: string;
@@ -18,10 +19,7 @@ type ChatQuestion = {
   categoryId: number;
 };
 type ChatResponse = BaseResponse & {
-  data: {
-    data: string;
-    isAnswered: boolean;
-  };
+  data: string;
 };
 type ChatMessage = {
   from: "user" | "server";
@@ -134,15 +132,25 @@ function ChatView({ chatMessages }: { chatMessages: ChatMessage[] }) {
   );
 }
 function ChatItem({ message }: { message: ChatMessage }) {
-  return (
-    <div className="flex flex-col gap-1 w-full">
-      <div className="w-full flex justify-between items-center">
-        <p className="text-zinc-950 font-bold">
-          {message.from === "user" ? "Ви" : "Відповідь"}
-        </p>
-        {message.from === "server" && <CopyButton text={message.data}/>}
+  if (message.from === "user") {
+    return (
+      <div className="flex flex-col gap-1 py-3 px-4 self-end bg-zinc-200/50 rounded-lg max-w-[60%] rounded-tr-none">
+        <MDXContent>{message.data}</MDXContent>
       </div>
-      <MDXContent>{message.data}</MDXContent>
+    )
+  }
+
+  return (
+    <div className="flex gap-3 w-full max-w-[100%]">
+      <div className="flex flex-col items-center gap-3">
+        <div className="p-2 rounded-full bg-zinc-200/50 h-min">
+          <BotIcon className="size-5 stroke-main"/>
+        </div>
+        <CopyButton text={message.data}/>
+      </div>
+      <div className="flex flex-col gap-1 w-full">
+        <MDXContent>{message.data}</MDXContent>
+      </div>
     </div>
   );
 }
@@ -164,7 +172,7 @@ function ResponseView(props: ResponseViewProps) {
         ...prev,
         {
           from: "server",
-          data: data.data.data,
+          data: data.data,
         },
       ]);
     }
