@@ -2,7 +2,6 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "../ui/button";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { http } from "../../lib/http";
-import { LoadingSpinner } from "../ui/loading-spinner";
 import { ErrorMessage } from "../ui/error-message";
 import { ArrowUp } from "lucide-react";
 import { TextArea } from "../ui/textarea";
@@ -123,6 +122,23 @@ export function ChatForm() {
   );
 }
 
+function ResponseSkeleton() {
+  return(
+    <div className="flex gap-3 w-full max-w-[100%]">
+      <div className="flex flex-col items-center gap-3">
+        <div className="p-2 rounded-full bg-zinc-200/50 h-min">
+          <BotIcon className="size-5 stroke-main"/>
+        </div>
+      </div>
+      <div className="flex items-center gap-1 w-min px-3 py-3 bg-zinc-200/50 rounded-full">
+        <div className="rounded-full p-1.5 bg-zinc-300 w-min animate-bounce1"/>
+        <div className="rounded-full p-1.5 bg-zinc-300 w-min animate-bounce2"/>
+        <div className="rounded-full p-1.5 bg-zinc-300 w-min animate-bounce3"/>
+      </div>
+    </div>
+  )
+} 
+
 function ChatView({ chatMessages }: { chatMessages: ChatMessage[] }) {
   return (
     <div className="flex flex-col gap-5 w-full">
@@ -183,7 +199,7 @@ function ResponseView(props: ResponseViewProps) {
   }, [props.isSuccess, props.data, props.setChatMessages]);
 
   if (props.isPending) {
-    return <LoadingSpinner />;
+    return <ResponseSkeleton />;
   }
 
   if (props.isError) {
