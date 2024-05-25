@@ -37,12 +37,6 @@ export function ChatForm() {
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
-  useEffect(() => {
-    if(inputRef.current) {
-      inputRef.current.focus();
-    }
-  }, []);
-
   const { data: categories, isError: isCategoriesError } = useQuery({
     queryKey: ["categories"],
     queryFn: async () => {
@@ -88,6 +82,7 @@ export function ChatForm() {
             }}
             aria-label="Запитання"
             ref={inputRef}
+            autoFocus
           />
           {isCategories &&
             <Select 
