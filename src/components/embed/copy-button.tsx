@@ -14,7 +14,7 @@ export function CopyButton({ text }: { text: string }) {
   }
 
   return (
-    <button
+    <div
       className="inline-flex items-center justify-center rounded-md text-sm transition-all bg-transparent hover:bg-zinc-200/50 p-2 flex-shrink-0"
       onClick={onClick}
       aria-label="Копіювати відповідь"
@@ -27,6 +27,6 @@ export function CopyButton({ text }: { text: string }) {
       <span className="sr-only">
         {copied ? "Відповідь зкопійовано!" : "Копіювати відповідь"}
       </span>
-    </button>
+    </div>
   );
 }

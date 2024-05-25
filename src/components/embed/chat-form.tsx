@@ -12,6 +12,7 @@ import { nanoid } from "nanoid";
 import { Select } from "../ui/select";
 import { cn } from "../../lib/utils";
 import { Bot as BotIcon } from "lucide-react";
+import { Tooltip } from "../ui/tooltip";
 
 type ChatQuestion = {
   question: string;
@@ -108,7 +109,7 @@ export function ChatForm() {
           </Button>
         </form>
       </div>
-      <div className="h-full w-full flex flex-col gap-5 mt-5 mb-[70px]">
+      <div className="h-full w-full flex flex-col gap-5 mt-5 mb-[120px] md:mb-[70px]">
         <ChatView chatMessages={chatMessages} />
         <ResponseView
           isPending={isPending}
@@ -146,7 +147,10 @@ function ChatItem({ message }: { message: ChatMessage }) {
         <div className="p-2 rounded-full bg-zinc-200/50 h-min">
           <BotIcon className="size-5 stroke-main"/>
         </div>
-        <CopyButton text={message.data}/>
+        <Tooltip
+          trigger={<CopyButton text={message.data}/>}
+          content="Копіювати"
+        />
       </div>
       <div className="flex flex-col gap-1 w-full">
         <MDXContent>{message.data}</MDXContent>

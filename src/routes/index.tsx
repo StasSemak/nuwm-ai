@@ -9,7 +9,6 @@ export function Index() {
           loading="eager"
           style={{ border: "0px", flexGrow: "1" }}
         /> 
-        {/* <ChatForm /> */}
       </div>
     </div>
   );
