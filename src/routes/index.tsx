@@ -19,7 +19,7 @@ export function Index() {
 
 function Footer() {
   return(
-    <div className="flex flex-col gap-3 w-full text-zinc-700 text-sm">
+    <div className="flex flex-col gap-3 w-full text-zinc-700 text-sm mb-2">
       <p>Чат-бот Національного університету водного господарства та природокористування на основі генеративного штучного інтелекту. Надає відповіді на запитання щодо вступної кампанії.</p>
       <div className="flex gap-12 items-center">
         <a className="" href="https://nuwm.edu.ua">Веб-сайт НУВГП</a>
