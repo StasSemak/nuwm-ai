@@ -64,6 +64,7 @@ export function ChatForm() {
     ]);
     mutate(chatQuestion);
     if (inputRef.current) inputRef.current.value = "";
+    setChatQuestion((prev) => ({...prev, question: ""}));
   }
 
   const isCategories = useMemo(() => {
