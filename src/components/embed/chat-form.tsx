@@ -2,7 +2,6 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "../ui/button";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { http } from "../../lib/http";
-import { LoadingSpinner } from "../ui/loading-spinner";
 import { ErrorMessage } from "../ui/error-message";
 import { ArrowUp } from "lucide-react";
 import { TextArea } from "../ui/textarea";
@@ -11,6 +10,8 @@ import { MDXContent } from "../mdx";
 import { nanoid } from "nanoid";
 import { Select } from "../ui/select";
 import { cn } from "../../lib/utils";
+import { Bot as BotIcon } from "lucide-react";
+import { Tooltip } from "../ui/tooltip";
 
 type ChatQuestion = {
   question: string;
@@ -18,10 +19,7 @@ type ChatQuestion = {
   categoryId: number;
 };
 type ChatResponse = BaseResponse & {
-  data: {
-    data: string;
-    isAnswered: boolean;
-  };
+  data: string;
 };
 type ChatMessage = {
   from: "user" | "server";
@@ -66,6 +64,7 @@ export function ChatForm() {
     ]);
     mutate(chatQuestion);
     if (inputRef.current) inputRef.current.value = "";
+    setChatQuestion((prev) => ({...prev, question: ""}));
   }
 
   const isCategories = useMemo(() => {
@@ -73,8 +72,8 @@ export function ChatForm() {
   }, [isCategoriesError, categories])
 
   return (
-    <div className="p-2 w-full items-center min-h-screen relative">
-      <div className="fixed pb-4 pt-1 bg-zinc-100 bottom-0 w-[calc(100%-16px)] mx-auto z-10">
+    <div className="p-2 w-full items-center flex-grow relative">
+      <div className="fixed pb-2 pt-1 bg-zinc-100 bottom-0 z-10 left-1 right-1">
         <form className={cn("flex gap-2 w-full justify-center", isCategories && "flex-wrap md:flex-nowrap")} onSubmit={onSubmit}>
           <TextArea
             placeholder="Введіть ваше запитання"
@@ -84,6 +83,7 @@ export function ChatForm() {
             }}
             aria-label="Запитання"
             ref={inputRef}
+            autoFocus
           />
           {isCategories &&
             <Select 
@@ -110,7 +110,7 @@ export function ChatForm() {
           </Button>
         </form>
       </div>
-      <div className="h-full w-full flex flex-col gap-5 mt-5 mb-[70px]">
+      <div className="h-full w-full flex flex-col gap-5 mt-5 mb-[120px] md:mb-[70px]">
         <ChatView chatMessages={chatMessages} />
         <ResponseView
           isPending={isPending}
@@ -124,6 +124,23 @@ export function ChatForm() {
   );
 }
 
+function ResponseSkeleton() {
+  return(
+    <div className="flex gap-3 w-full max-w-[100%]">
+      <div className="flex flex-col items-center gap-3">
+        <div className="p-2 rounded-full bg-zinc-200/50 h-min">
+          <BotIcon className="size-5 stroke-main"/>
+        </div>
+      </div>
+      <div className="flex items-center gap-1 w-min px-3 py-3 bg-zinc-200/50 rounded-full">
+        <div className="rounded-full p-1.5 bg-zinc-300 w-min animate-bounce1"/>
+        <div className="rounded-full p-1.5 bg-zinc-300 w-min animate-bounce2"/>
+        <div className="rounded-full p-1.5 bg-zinc-300 w-min animate-bounce3"/>
+      </div>
+    </div>
+  )
+} 
+
 function ChatView({ chatMessages }: { chatMessages: ChatMessage[] }) {
   return (
     <div className="flex flex-col gap-5 w-full">
@@ -134,15 +151,28 @@ function ChatView({ chatMessages }: { chatMessages: ChatMessage[] }) {
   );
 }
 function ChatItem({ message }: { message: ChatMessage }) {
-  return (
-    <div className="flex flex-col gap-1 w-full">
-      <div className="w-full flex justify-between items-center">
-        <p className="text-zinc-950 font-bold">
-          {message.from === "user" ? "Ви" : "Відповідь"}
-        </p>
-        {message.from === "server" && <CopyButton text={message.data}/>}
+  if (message.from === "user") {
+    return (
+      <div className="flex flex-col gap-1 py-3 px-4 self-end bg-zinc-200/50 rounded-lg max-w-[60%] rounded-tr-none">
+        <MDXContent>{message.data}</MDXContent>
       </div>
-      <MDXContent>{message.data}</MDXContent>
+    )
+  }
+
+  return (
+    <div className="flex gap-3 w-full max-w-[100%]">
+      <div className="flex flex-col items-center gap-3">
+        <div className="p-2 rounded-full bg-zinc-200/50 h-min">
+          <BotIcon className="size-5 stroke-main"/>
+        </div>
+        <Tooltip
+          trigger={<CopyButton text={message.data}/>}
+          content="Копіювати"
+        />
+      </div>
+      <div className="flex flex-col gap-1 w-full">
+        <MDXContent>{message.data}</MDXContent>
+      </div>
     </div>
   );
 }
@@ -164,14 +194,14 @@ function ResponseView(props: ResponseViewProps) {
         ...prev,
         {
           from: "server",
-          data: data.data.data,
+          data: data.data,
         },
       ]);
     }
   }, [props.isSuccess, props.data, props.setChatMessages]);
 
   if (props.isPending) {
-    return <LoadingSpinner />;
+    return <ResponseSkeleton />;
   }
 
   if (props.isError) {
