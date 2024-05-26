@@ -22,9 +22,9 @@ function Footer() {
     <div className="flex flex-col gap-3 w-full text-zinc-700 text-sm mb-2">
       <p>Чат-бот Національного університету водного господарства та природокористування на основі генеративного штучного інтелекту. Надає відповіді на запитання щодо вступної кампанії.</p>
       <div className="flex gap-12 items-center">
-        <a className="" href="https://nuwm.edu.ua">Веб-сайт НУВГП</a>
-        <a href="https://t.me/NUWEEAI_bot">Чат-бот у Telegram</a>
-        <Link to="/admin">
+        <a href="https://nuwm.edu.ua" target="_blank" rel="noreferrer">Веб-сайт НУВГП</a>
+        <a href="https://t.me/NUWEEAI_bot" target="_blank" rel="noreferrer">Чат-бот у Telegram</a>
+        <Link to="/admin" target="_blank" rel="noreferrer">
           Для адміністратора
         </Link>
       </div>
