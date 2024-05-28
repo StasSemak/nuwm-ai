@@ -17,7 +17,7 @@ export function RequestView() {
   const { id } = useParams();
 
   const { data, isError, isLoading, refetch } = useQuery({
-    queryKey: ["get-one-request"],
+    queryKey: ["get-one-request", id],
     queryFn: async () => {
       const { data } = await http.get<RequestResponse>(`/requests/${id}`);
       return data;
@@ -52,7 +52,7 @@ function RequestListItem({caption, content}: {caption: React.ReactNode, content:
 
 function RequestChat({chatId}: {chatId: string}) {
   const { data, isError, isLoading } = useQuery({
-    queryKey: ["get-request-chat"],
+    queryKey: ["get-request-chat", chatId],
     queryFn: async () => {
       const { data } = await http.get<HistoryResponse>(`/history/${chatId}`);
       return data;

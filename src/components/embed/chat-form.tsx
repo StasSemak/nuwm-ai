@@ -38,7 +38,7 @@ export function ChatForm() {
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
   const { data: categories, isError: isCategoriesError } = useQuery({
-    queryKey: ["categories"],
+    queryKey: ["get-all-categories"],
     queryFn: async () => {
       const { data } = await http.get<CategoriesResponse>("/categories");
       return data;

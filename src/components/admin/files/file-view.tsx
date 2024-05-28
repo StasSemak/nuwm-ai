@@ -24,7 +24,7 @@ export function FileView() {
   const { id } = useParams();
 
   const { data, isError, isLoading, refetch } = useQuery({
-    queryKey: ["get-one-file"],
+    queryKey: ["get-one-file", id],
     queryFn: async () => {
       const { data } = await http.get<FileResponse>(`/files/${id}`);
       return data;
@@ -126,7 +126,7 @@ function Form({categories, fileId, refetch}: {categories: CategoryItem[], fileId
   const toast = useCustomToast();
 
   const { data, isError, isLoading } = useQuery({
-    queryKey: ["categories"],
+    queryKey: ["get-all-categories"],
     queryFn: async () => {
       const { data } = await http.get<CategoriesResponse>("/categories");
       return data

@@ -26,7 +26,7 @@ function Form() {
   const queryClient = useQueryClient();
 
   const { data: categories, isError, isLoading } = useQuery({
-    queryKey: ["categories"],
+    queryKey: ["get-all-categories"],
     queryFn: async () => {
       const { data } = await http.get<CategoriesResponse>("/categories");
       return data

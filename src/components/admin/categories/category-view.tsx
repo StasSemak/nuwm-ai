@@ -13,7 +13,7 @@ export function CategoryView() {
   const { id } = useParams();
 
   const { data, isError, isLoading } = useQuery({
-    queryKey: ["get-one-category"],
+    queryKey: ["get-one-category", id],
     queryFn: async () => {
       const { data } = await http.get<CategoryResponse>(`/categories/${id}`);
       return data;
@@ -36,7 +36,7 @@ export function CategoryView() {
 
 function FilesList({categoryId}: {categoryId: number}) {
   const { data, isLoading, isError, refetch } = useQuery({
-    queryKey: [`get-files-by-category-${categoryId}`],
+    queryKey: ["get-files-by-category", categoryId],
     queryFn: async () => {
       const { data } = await http.get<FilesResponse>(`/files/category/${categoryId}`);
       return data;
