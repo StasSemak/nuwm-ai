@@ -37,6 +37,7 @@ function Form() {
       queryClient.invalidateQueries({
         queryKey: ["get-all-categories"],
       });
+      setName("");
     },
     onError: () => {
       toast({

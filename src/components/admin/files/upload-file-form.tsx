@@ -20,7 +20,7 @@ export function UploadFileForm() {
 }
 
 function Form() {
-  const [file, setFile] = useState<File | undefined>();
+  const [file, setFile] = useState<File | undefined>(undefined);
   const [selectedCategories, setSelectedCategories] = useState<Option[]>([]);
   const toast = useCustomToast();
   const queryClient = useQueryClient();
@@ -50,6 +50,8 @@ function Form() {
       queryClient.invalidateQueries({
         queryKey: ["get-all-files"],
       });
+      setFile(undefined);
+      setSelectedCategories([]);
     },
     onError: () => {
       toast({
