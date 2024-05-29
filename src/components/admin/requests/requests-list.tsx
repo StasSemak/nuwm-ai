@@ -1,10 +1,10 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { http } from "../../../lib/http";
 import { LoadingSpinner } from "../../ui/loading-spinner";
 import { ErrorMessage } from "../../ui/error-message";
 import { useCustomToast } from "../../../hooks/use-custom-toast";
 import { Dialog } from "../../ui/dialog";
-import { CheckCircle2, ExternalLinkIcon, Trash, XCircle } from "lucide-react";
+import { CheckCircle2, ExternalLinkIcon, Loader2, Trash, XCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 import { formatDate } from "../../../lib/utils";
 
@@ -85,23 +85,25 @@ function DeleteButton({
 }) {
   const toast = useCustomToast();
 
-  function deleteHandler() {
-    http
-      .delete(`/requests/${id}`)
-      .then(() => {
-        toast({
-          type: "error",
-          content: "Операція успішна!",
-        });
-        refetch();
-      })
-      .catch(() => {
-        toast({
-          type: "error",
-          content: "Виникла помилка! Спробуйте ще раз",
-        });
+  const { mutate, isPending } = useMutation({
+    mutationKey: ["delete-request", id],
+    mutationFn: async (payload: { id: number }) => {
+      await http.delete(`/requests/${payload.id}`);
+    },
+    onSuccess: () => {
+      toast({
+        type: "error",
+        content: "Операція успішна!",
       });
-  }
+      refetch();
+    },
+    onError: () => {
+      toast({
+        type: "error",
+        content: "Виникла помилка! Спробуйте ще раз",
+      });
+    },
+  })
 
   return (
     <Dialog
@@ -109,12 +111,16 @@ function DeleteButton({
         <button
           className="inline-flex items-center justify-center rounded-md text-sm transition-all bg-transparent hover:bg-zinc-200 h-9 px-2 flex-shrink-0"
         >
-          <Trash className="stroke-main size-4" />
+          {isPending ? (
+            <Loader2 className="stroke-main size-4 animate-spin" />
+          ) : (
+            <Trash className="stroke-main size-4" />
+          )}
         </button>
       }
       title="Ви впевнені?"
       description={`Запит за номером ${contactNumber} буде видалено без можливості відновлення!`}
-      onActionClick={deleteHandler}
+      onActionClick={() => mutate({ id })}
     />
   );
 }

@@ -75,26 +75,25 @@ function CategoryListItem({category, fileId, refetch}: CatItemProps) {
 function DeleteCategoryButton({category, fileId, refetch}: CatItemProps) {
   const toast = useCustomToast();
 
-  function deleteHandler() {
-    http
-      .post(`/categories/remove`, {
-        fileId: fileId,
-        categoryId: category.id,
-      })
-      .then(() => {
-        toast({
-          type: "success",
-          content: "Операція успішна!",
-        });
-        refetch();
-      })
-      .catch(() => {
-        toast({
-          type: "error",
-          content: "Виникла помилка! Спробуйте ще раз",
-        });
+  const { mutate, isPending } = useMutation({
+    mutationKey: ["delete-category-from-file", fileId],
+    mutationFn: async (payload: {fileId: number, categoryId: number}) => {
+      await http.post(`/categories/remove`, payload);
+    },
+    onSuccess: () => {
+      toast({
+        type: "success",
+        content: "Операція успішна!",
       });
-  }
+      refetch();
+    },
+    onError: () => {
+      toast({
+        type: "error",
+        content: "Виникла помилка! Спробуйте ще раз",
+      });
+    },
+  })
 
   return (
     <Dialog
@@ -102,12 +101,16 @@ function DeleteCategoryButton({category, fileId, refetch}: CatItemProps) {
         <button
           className="inline-flex items-center justify-center rounded-md text-sm transition-all bg-transparent hover:bg-secondary/10 p-1 flex-shrink-0"
         >
-          <XIcon className="stroke-zinc-700 size-4" />
+          {isPending ? (
+            <Loader2 className="stroke-zinc-700 size-4 animate-spin" />
+          ) : (
+            <XIcon className="stroke-zinc-700 size-4" />
+          )}
         </button>
       }
       title={"Ви впевнені?"}
       description={`Категорію '${category.name}' буде видалено з цього файлу!`}
-      onActionClick={deleteHandler}
+      onActionClick={() => mutate({ fileId, categoryId: category.id })}
     />
   );
 }
@@ -134,24 +137,23 @@ function Form({categories, fileId, refetch}: {categories: CategoryItem[], fileId
   })
 
   const { mutate, isPending } = useMutation({
-    mutationKey: ["update-categories"],
+    mutationKey: ["update-categories", fileId],
     mutationFn: async (payload: UpdateCategoriesPayload) => {
-      try {
-        await http.post("/categories/assign", payload);
-
-        toast({
-          type: "success",
-          content: "Категорії успішно оновлено!",
-        });
-        refetch();
-        setSelectedCategories([]);
-      }
-      catch {
-        toast({
-          type: "error",
-          content: "Виникла помилка! Спробуйте ще раз",
-        });
-      }
+      await http.post("/categories/assign", payload);
+    },
+    onSuccess: () => {
+      toast({
+        type: "success",
+        content: "Категорії успішно оновлено!",
+      });
+      refetch();
+      setSelectedCategories([]);
+    },
+    onError: () => {
+      toast({
+        type: "error",
+        content: "Виникла помилка! Спробуйте ще раз",
+      });
     },
   });
 

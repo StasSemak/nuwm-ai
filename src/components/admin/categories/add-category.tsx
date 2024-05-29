@@ -27,22 +27,22 @@ function Form() {
   const { mutate, isPending } = useMutation({
     mutationKey: ["create-category"],
     mutationFn: async (payload: CreateCategoryPayload) => {
-      try {
-        await http.post("/categories", payload);
-
-        toast({
-          type: "success",
-          content: `Категорію '${name}' успішно створено!`,
-        })
-        queryClient.invalidateQueries({
-          queryKey: ["get-all-categories"],
-        })
-      } catch {
-        toast({
-          type: "error",
-          content: "Виникла помилка! Спробуйте ще раз",
-        })
-      }
+      await http.post("/categories", payload);
+    },
+    onSuccess: () => {
+      toast({
+        type: "success",
+        content: `Категорію '${name}' успішно створено!`,
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["get-all-categories"],
+      });
+    },
+    onError: () => {
+      toast({
+        type: "error",
+        content: "Виникла помилка! Спробуйте ще раз",
+      });
     },
   });
 

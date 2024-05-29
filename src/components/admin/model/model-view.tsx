@@ -53,23 +53,22 @@ function SetModel({models, refetch, currentModel}: {models: ModelItem[], refetch
   const { mutate, isPending } = useMutation({
     mutationKey: ["set-model"],
     mutationFn: async (payload: SetModelPayload) => {
-      try {
-        await http.post("/answer/models", payload);
-
-        toast({
-          type: "success",
-          content: "Модель успішно оновлено!",
-        });
-        refetch();
-        setModelId(-1);
-        if(selectRef.current) selectRef.current.value = "-1"; 
-      }
-      catch {
-        toast({
-          type: "error",
-          content: "Виникла помилка! Спробуйте ще раз",
-        });
-      }
+      await http.post("/answer/models", payload);
+    },
+    onSuccess: () => {
+      toast({
+        type: "success",
+        content: "Модель успішно оновлено!",
+      });
+      refetch();
+      setModelId(-1);
+      if(selectRef.current) selectRef.current.value = "-1"; 
+    },
+    onError: () => {
+      toast({
+        type: "error",
+        content: "Виникла помилка! Спробуйте ще раз",
+      });
     },
   });
 

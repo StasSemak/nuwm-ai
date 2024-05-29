@@ -36,27 +36,26 @@ function Form() {
   const { mutate, isPending } = useMutation({
     mutationKey: ["upload-file"],
     mutationFn: async (formData: FormData) => {
-      try {
-        await http.post("/document", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
-
-        toast({
-          type: "success",
-          content: "Файл успішно завантажено!",
-        });
-        queryClient.invalidateQueries({
-          queryKey: ["get-all-files"],
-        });
-      }
-      catch {
-        toast({
-          type: "error",
-          content: "Виникла помилка! Спробуйте ще раз",
-        });
-      }
+      await http.post("/document", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+    },
+    onSuccess: () => {
+      toast({
+        type: "success",
+        content: "Файл успішно завантажено!",
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["get-all-files"],
+      });
+    },
+    onError: () => {
+      toast({
+        type: "error",
+        content: "Виникла помилка! Спробуйте ще раз",
+      });
     },
   });
 
