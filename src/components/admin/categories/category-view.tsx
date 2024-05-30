@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { ErrorMessage } from "../../ui/error-message";
 import { LoadingSpinner } from "../../ui/loading-spinner";
 import { FileCard } from "../files/files-list";
+import { RefreshingStatus } from "../../ui/refreshing";
 
 type CategoryResponse = BaseResponse & {
   data: CategoryItem;
@@ -13,7 +14,7 @@ export function CategoryView() {
   const { id } = useParams();
 
   const { data, isError, isLoading } = useQuery({
-    queryKey: ["get-one-category"],
+    queryKey: ["get-one-category", id],
     queryFn: async () => {
       const { data } = await http.get<CategoryResponse>(`/categories/${id}`);
       return data;
@@ -25,10 +26,13 @@ export function CategoryView() {
 
   return(
     <div className="flex flex-col gap-4 w-full">
-      <p className="text-zinc-950 text-xl">
-        Категорія
-        <span className="ml-2 font-bold">{data.data.name}</span>
-      </p>
+      <div className="flex w-full items-center justify-between">
+        <p className="text-zinc-950 text-xl">
+          Категорія
+          <span className="ml-2 font-bold">{data.data.name}</span>
+        </p>
+        <RefreshingStatus queryKey={["get-files-by-category", data.data.id]}/>
+      </div>
       <FilesList categoryId={data.data.id} />
     </div>
   )
@@ -36,7 +40,7 @@ export function CategoryView() {
 
 function FilesList({categoryId}: {categoryId: number}) {
   const { data, isLoading, isError, refetch } = useQuery({
-    queryKey: [`get-files-by-category-${categoryId}`],
+    queryKey: ["get-files-by-category", categoryId],
     queryFn: async () => {
       const { data } = await http.get<FilesResponse>(`/files/category/${categoryId}`);
       return data;

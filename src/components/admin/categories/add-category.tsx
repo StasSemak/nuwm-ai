@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { http } from "../../../lib/http";
 import { Input } from "../../ui/input";
 import { Button } from "../../ui/button";
@@ -21,28 +21,31 @@ export function AddCategory() {
 
 function Form() {
   const [name, setName] = useState<string>("");
+  const inputRef = useRef<HTMLInputElement>(null);
   const toast = useCustomToast();
   const queryClient = useQueryClient();
 
   const { mutate, isPending } = useMutation({
     mutationKey: ["create-category"],
     mutationFn: async (payload: CreateCategoryPayload) => {
-      try {
-        await http.post("/categories", payload);
-
-        toast({
-          type: "success",
-          content: `Категорію '${name}' успішно створено!`,
-        })
-        queryClient.invalidateQueries({
-          queryKey: ["get-all-categories"],
-        })
-      } catch {
-        toast({
-          type: "error",
-          content: "Виникла помилка! Спробуйте ще раз",
-        })
-      }
+      await http.post("/categories", payload);
+    },
+    onSuccess: () => {
+      toast({
+        type: "success",
+        content: `Категорію '${name}' успішно створено!`,
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["get-all-categories"],
+      });
+      setName("");
+      if(inputRef.current) inputRef.current.value = "";
+    },
+    onError: () => {
+      toast({
+        type: "error",
+        content: "Виникла помилка! Спробуйте ще раз",
+      });
     },
   });
 
@@ -58,6 +61,7 @@ function Form() {
       <Input
         name="name"
         placeholder="Ім'я категорії"
+        ref={inputRef}
         onChange={(e) => {
           setName(e.target.value);
         }}

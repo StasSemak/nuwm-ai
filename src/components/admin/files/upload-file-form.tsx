@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { Button } from "../../ui/button";
 import { Input } from "../../ui/input";
 import { http } from "../../../lib/http";
@@ -20,13 +20,14 @@ export function UploadFileForm() {
 }
 
 function Form() {
-  const [file, setFile] = useState<File | undefined>();
+  const [file, setFile] = useState<File | undefined>(undefined);
+  const inputRef = useRef<HTMLInputElement>(null);
   const [selectedCategories, setSelectedCategories] = useState<Option[]>([]);
   const toast = useCustomToast();
   const queryClient = useQueryClient();
 
   const { data: categories, isError, isLoading } = useQuery({
-    queryKey: ["categories"],
+    queryKey: ["get-all-categories"],
     queryFn: async () => {
       const { data } = await http.get<CategoriesResponse>("/categories");
       return data
@@ -36,27 +37,29 @@ function Form() {
   const { mutate, isPending } = useMutation({
     mutationKey: ["upload-file"],
     mutationFn: async (formData: FormData) => {
-      try {
-        await http.post("/document", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
-
-        toast({
-          type: "success",
-          content: "Файл успішно завантажено!",
-        });
-        queryClient.invalidateQueries({
-          queryKey: ["get-all-files"],
-        });
-      }
-      catch {
-        toast({
-          type: "error",
-          content: "Виникла помилка! Спробуйте ще раз",
-        });
-      }
+      await http.post("/document", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+    },
+    onSuccess: () => {
+      toast({
+        type: "success",
+        content: "Файл успішно завантажено!",
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["get-all-files"],
+      });
+      setFile(undefined);
+      setSelectedCategories([]);
+      if(inputRef.current) inputRef.current.files = null; 
+    },
+    onError: () => {
+      toast({
+        type: "error",
+        content: "Виникла помилка! Спробуйте ще раз",
+      });
     },
   });
 
@@ -90,6 +93,7 @@ function Form() {
       <div className="flex gap-2">
         <Input
           type="file"
+          ref={inputRef}
           onChange={(e) => {
             if (e.target.files && e.target.files.length > 0) {
               setFile(e.target.files[0]);

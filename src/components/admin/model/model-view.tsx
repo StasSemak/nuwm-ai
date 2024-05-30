@@ -7,6 +7,7 @@ import { Loader2 } from "lucide-react";
 import { Select } from "../../ui/select";
 import { useRef, useState } from "react";
 import { useCustomToast } from "../../../hooks/use-custom-toast";
+import { RefreshingStatus } from "../../ui/refreshing";
 
 type ModelItem = {
   id: number;
@@ -36,10 +37,13 @@ export function ModelView() {
 
   return (
     <div className="flex flex-col gap-4 w-full">
-      <p className="text-zinc-950 text-xl">
-        Поточна модель
-        <span className="ml-2 font-bold">{currentModel.name}</span>
-      </p>
+      <div className="flex gap-5 items-center">
+        <p className="text-zinc-950 text-xl">
+          Поточна модель
+          <span className="ml-2 font-bold">{currentModel.name}</span>
+        </p>
+        <RefreshingStatus queryKey={["get-models"]}/>
+      </div>
       <SetModel models={data.data} refetch={refetch} currentModel={currentModel}/> 
     </div>
   );
@@ -53,23 +57,22 @@ function SetModel({models, refetch, currentModel}: {models: ModelItem[], refetch
   const { mutate, isPending } = useMutation({
     mutationKey: ["set-model"],
     mutationFn: async (payload: SetModelPayload) => {
-      try {
-        await http.post("/answer/models", payload);
-
-        toast({
-          type: "success",
-          content: "Модель успішно оновлено!",
-        });
-        refetch();
-        setModelId(-1);
-        if(selectRef.current) selectRef.current.value = "-1"; 
-      }
-      catch {
-        toast({
-          type: "error",
-          content: "Виникла помилка! Спробуйте ще раз",
-        });
-      }
+      await http.post("/answer/models", payload);
+    },
+    onSuccess: () => {
+      toast({
+        type: "success",
+        content: "Модель успішно оновлено!",
+      });
+      refetch();
+      setModelId(-1);
+      if(selectRef.current) selectRef.current.value = "-1"; 
+    },
+    onError: () => {
+      toast({
+        type: "error",
+        content: "Виникла помилка! Спробуйте ще раз",
+      });
     },
   });
 

@@ -11,6 +11,7 @@ import { Button } from "../../ui/button";
 import { Loader2, X as XIcon } from "lucide-react";
 import { useCustomToast } from "../../../hooks/use-custom-toast";
 import { Dialog } from "../../ui/dialog";
+import { RefreshingStatus } from "../../ui/refreshing";
 
 type FileResponse = BaseResponse & {
   data: FileItem;
@@ -24,7 +25,7 @@ export function FileView() {
   const { id } = useParams();
 
   const { data, isError, isLoading, refetch } = useQuery({
-    queryKey: ["get-one-file"],
+    queryKey: ["get-one-file", id],
     queryFn: async () => {
       const { data } = await http.get<FileResponse>(`/files/${id}`);
       return data;
@@ -38,7 +39,10 @@ export function FileView() {
 
   return(
     <div className="flex flex-col gap-2.5 w-full">
-      <p className="text-zinc-950 text-xl font-bold">{file.name}</p>
+      <div className="flex gap-5 items-center">
+        <p className="text-zinc-950 text-xl font-bold">{file.name}</p>
+        <RefreshingStatus queryKey={["get-one-file", id]}/>
+      </div>
       <div className="flex gap-2">
         <p className="font-bold text-zinc-950">Створено:</p>
         <p className="text-zinc-950">{formatDate(file.createdAt)}</p>
@@ -75,26 +79,25 @@ function CategoryListItem({category, fileId, refetch}: CatItemProps) {
 function DeleteCategoryButton({category, fileId, refetch}: CatItemProps) {
   const toast = useCustomToast();
 
-  function deleteHandler() {
-    http
-      .post(`/categories/remove`, {
-        fileId: fileId,
-        categoryId: category.id,
-      })
-      .then(() => {
-        toast({
-          type: "success",
-          content: "Операція успішна!",
-        });
-        refetch();
-      })
-      .catch(() => {
-        toast({
-          type: "error",
-          content: "Виникла помилка! Спробуйте ще раз",
-        });
+  const { mutate, isPending } = useMutation({
+    mutationKey: ["delete-category-from-file", fileId],
+    mutationFn: async (payload: {fileId: number, categoryId: number}) => {
+      await http.post(`/categories/remove`, payload);
+    },
+    onSuccess: () => {
+      toast({
+        type: "success",
+        content: "Операція успішна!",
       });
-  }
+      refetch();
+    },
+    onError: () => {
+      toast({
+        type: "error",
+        content: "Виникла помилка! Спробуйте ще раз",
+      });
+    },
+  })
 
   return (
     <Dialog
@@ -102,12 +105,16 @@ function DeleteCategoryButton({category, fileId, refetch}: CatItemProps) {
         <button
           className="inline-flex items-center justify-center rounded-md text-sm transition-all bg-transparent hover:bg-secondary/10 p-1 flex-shrink-0"
         >
-          <XIcon className="stroke-zinc-700 size-4" />
+          {isPending ? (
+            <Loader2 className="stroke-zinc-700 size-4 animate-spin" />
+          ) : (
+            <XIcon className="stroke-zinc-700 size-4" />
+          )}
         </button>
       }
       title={"Ви впевнені?"}
       description={`Категорію '${category.name}' буде видалено з цього файлу!`}
-      onActionClick={deleteHandler}
+      onActionClick={() => mutate({ fileId, categoryId: category.id })}
     />
   );
 }
@@ -126,7 +133,7 @@ function Form({categories, fileId, refetch}: {categories: CategoryItem[], fileId
   const toast = useCustomToast();
 
   const { data, isError, isLoading } = useQuery({
-    queryKey: ["categories"],
+    queryKey: ["get-all-categories"],
     queryFn: async () => {
       const { data } = await http.get<CategoriesResponse>("/categories");
       return data
@@ -134,24 +141,23 @@ function Form({categories, fileId, refetch}: {categories: CategoryItem[], fileId
   })
 
   const { mutate, isPending } = useMutation({
-    mutationKey: ["update-categories"],
+    mutationKey: ["update-categories", fileId],
     mutationFn: async (payload: UpdateCategoriesPayload) => {
-      try {
-        await http.post("/categories/assign", payload);
-
-        toast({
-          type: "success",
-          content: "Категорії успішно оновлено!",
-        });
-        refetch();
-        setSelectedCategories([]);
-      }
-      catch {
-        toast({
-          type: "error",
-          content: "Виникла помилка! Спробуйте ще раз",
-        });
-      }
+      await http.post("/categories/assign", payload);
+    },
+    onSuccess: () => {
+      toast({
+        type: "success",
+        content: "Категорії успішно оновлено!",
+      });
+      refetch();
+      setSelectedCategories([]);
+    },
+    onError: () => {
+      toast({
+        type: "error",
+        content: "Виникла помилка! Спробуйте ще раз",
+      });
     },
   });
 

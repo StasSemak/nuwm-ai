@@ -1,17 +1,21 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { http } from "../../../lib/http";
 import { LoadingSpinner } from "../../ui/loading-spinner";
 import { ErrorMessage } from "../../ui/error-message";
-import { ExternalLinkIcon, Trash } from "lucide-react";
+import { ExternalLinkIcon, Loader2, Trash } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useCustomToast } from "../../../hooks/use-custom-toast";
 import { Dialog } from "../../ui/dialog";
+import { RefreshingStatus } from "../../ui/refreshing";
 
 export function CategoriesList() {
   return (
     <div className="flex flex-col gap-4 w-full">
-      <h2 className="text-2xl text-zinc-950 mb-1">Список категорій</h2>
-      <List />
+      <div className="w-full flex justify-between items-center">
+        <h2 className="text-2xl text-zinc-950 mb-1">Список категорій</h2>
+        <RefreshingStatus queryKey={["get-all-categories"]}/>
+      </div>
+      <List/>
     </div>
   );
 }
@@ -68,36 +72,40 @@ function DeleteButton({
 }) {
   const toast = useCustomToast();
 
-  function deleteHandler() {
-    http
-      .delete(`/categories/${id}`)
-      .then(() => {
-        toast({
-          type: "success",
-          content: "Операція успішна!",
-        });
-        refetch();
-      })
-      .catch(() => {
-        toast({
-          type: "error",
-          content: "Виникла помилка! Спробуйте ще раз",
-        });
+  const { mutate, isPending } = useMutation({
+    mutationKey: ["delete-category", id],
+    mutationFn: async (payload: {id: number}) => {
+      await http.delete(`/categories/${payload.id}`);
+    },
+    onSuccess: () => {
+      toast({
+        type: "success",
+        content: "Операція успішна!",
       });
-  }
+      refetch();
+    },
+    onError: () => {
+      toast({
+        type: "error",
+        content: "Виникла помилка! Спробуйте ще раз",
+      });
+    },
+  })
 
   return (
     <Dialog
       trigger={
-        <button
-          className="inline-flex items-center justify-center rounded-md text-sm transition-all bg-transparent hover:bg-zinc-200 h-9 px-2 flex-shrink-0"
-        >
-          <Trash className="stroke-main h-4 w-4" />
+        <button className="inline-flex items-center justify-center rounded-md text-sm transition-all bg-transparent hover:bg-zinc-200 h-9 px-2 flex-shrink-0">
+          {isPending ? (
+            <Loader2 className="stroke-main size-4 animate-spin" />
+          ) : (
+            <Trash className="stroke-main size-4" />
+          )}
         </button>
       }
       title={"Ви впевнені?"}
       description={`Категорію '${name}' буде видалено без можливості відновлення!`}
-      onActionClick={deleteHandler}
+      onActionClick={() => mutate({ id })}
     />
   );
 }
