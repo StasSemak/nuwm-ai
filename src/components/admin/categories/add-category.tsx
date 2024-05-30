@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { http } from "../../../lib/http";
 import { Input } from "../../ui/input";
 import { Button } from "../../ui/button";
@@ -21,6 +21,7 @@ export function AddCategory() {
 
 function Form() {
   const [name, setName] = useState<string>("");
+  const inputRef = useRef<HTMLInputElement>(null);
   const toast = useCustomToast();
   const queryClient = useQueryClient();
 
@@ -38,6 +39,7 @@ function Form() {
         queryKey: ["get-all-categories"],
       });
       setName("");
+      if(inputRef.current) inputRef.current.value = "";
     },
     onError: () => {
       toast({
@@ -59,6 +61,7 @@ function Form() {
       <Input
         name="name"
         placeholder="Ім'я категорії"
+        ref={inputRef}
         onChange={(e) => {
           setName(e.target.value);
         }}

@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { Button } from "../../ui/button";
 import { Input } from "../../ui/input";
 import { http } from "../../../lib/http";
@@ -21,6 +21,7 @@ export function UploadFileForm() {
 
 function Form() {
   const [file, setFile] = useState<File | undefined>(undefined);
+  const inputRef = useRef<HTMLInputElement>(null);
   const [selectedCategories, setSelectedCategories] = useState<Option[]>([]);
   const toast = useCustomToast();
   const queryClient = useQueryClient();
@@ -52,6 +53,7 @@ function Form() {
       });
       setFile(undefined);
       setSelectedCategories([]);
+      if(inputRef.current) inputRef.current.files = null; 
     },
     onError: () => {
       toast({
@@ -91,6 +93,7 @@ function Form() {
       <div className="flex gap-2">
         <Input
           type="file"
+          ref={inputRef}
           onChange={(e) => {
             if (e.target.files && e.target.files.length > 0) {
               setFile(e.target.files[0]);
