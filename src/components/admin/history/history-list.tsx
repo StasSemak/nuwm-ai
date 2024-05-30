@@ -54,6 +54,10 @@ function FilterForm() {
     else params.delete("questionsOnly");
 
     navigate(`?${params}`);
+    queryClient.setQueryData(["infinite-history-query"], (data: any) => ({
+      pages: data.pages.slice(0, 1),
+      pageParams: data.pageParams.slice(0, 1),
+    }))
     queryClient.invalidateQueries({
       queryKey: ["infinite-history-query"],
     });
