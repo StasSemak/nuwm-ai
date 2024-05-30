@@ -7,6 +7,7 @@ import { Dialog } from "../../ui/dialog";
 import { CheckCircle2, ExternalLinkIcon, Loader2, Trash, XCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 import { formatDate } from "../../../lib/utils";
+import { RefreshingStatus } from "../../ui/refreshing";
 
 type RequestsResponse = BaseResponse & {
   data: RequestItem[];
@@ -15,7 +16,10 @@ type RequestsResponse = BaseResponse & {
 export function RequestsList() {
   return (
     <div className="flex flex-col gap-4 w-full">
-      <h2 className="text-2xl text-zinc-950 mb-1">Запити</h2>
+      <div className="w-full flex justify-between items-center">
+        <h2 className="text-2xl text-zinc-950 mb-1">Запити</h2>
+        <RefreshingStatus queryKey={["get-all-requests"]}/>
+      </div>
       <List />
     </div>
   );

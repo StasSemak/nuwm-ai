@@ -7,12 +7,16 @@ import { Link } from "react-router-dom";
 import { Badge } from "../../ui/badge";
 import { useCustomToast } from "../../../hooks/use-custom-toast";
 import { Dialog } from "../../ui/dialog";
+import { RefreshingStatus } from "../../ui/refreshing";
 
 export function FilesList() {
   return (
     <div className="flex flex-col gap-4 w-full">
-      <h2 className="text-2xl text-zinc-950 mb-1">Список файлів</h2>
-      <List />
+      <div className="w-full flex justify-between items-center">
+        <h2 className="text-2xl text-zinc-950 mb-1">Список файлів</h2>
+        <RefreshingStatus queryKey={["get-all-files"]}/>
+      </div>
+      <List/>
     </div>
   );
 }

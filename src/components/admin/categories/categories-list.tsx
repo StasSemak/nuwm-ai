@@ -6,12 +6,16 @@ import { ExternalLinkIcon, Loader2, Trash } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useCustomToast } from "../../../hooks/use-custom-toast";
 import { Dialog } from "../../ui/dialog";
+import { RefreshingStatus } from "../../ui/refreshing";
 
 export function CategoriesList() {
   return (
     <div className="flex flex-col gap-4 w-full">
-      <h2 className="text-2xl text-zinc-950 mb-1">Список категорій</h2>
-      <List />
+      <div className="w-full flex justify-between items-center">
+        <h2 className="text-2xl text-zinc-950 mb-1">Список категорій</h2>
+        <RefreshingStatus queryKey={["get-all-categories"]}/>
+      </div>
+      <List/>
     </div>
   );
 }

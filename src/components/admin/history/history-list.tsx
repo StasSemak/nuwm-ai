@@ -14,6 +14,7 @@ import { formatDate } from "../../../lib/utils";
 import { MDXContent } from "../../mdx";
 import { Checkbox } from "../../ui/checkbox";
 import { useNavigate } from "react-router-dom";
+import { RefreshingStatus } from "../../ui/refreshing";
 
 const ITEMS_PER_PAGE = 30;
 
@@ -80,9 +81,12 @@ function FilterForm() {
           checked={isQuestionsOnly}
         />
       </div>
-      <Button type="submit">
-        Застосувати
-      </Button>
+      <div className="flex gap-3 items-center">
+        <RefreshingStatus queryKey={["infinite-history-query"]}/>
+        <Button type="submit">
+          Застосувати
+        </Button>
+      </div>
     </form>
   )
 }

@@ -8,6 +8,7 @@ import { HistoryListItem } from "../history/history-list";
 import { Dialog } from "../../ui/dialog";
 import { useCustomToast } from "../../../hooks/use-custom-toast";
 import { Loader2, Pen } from "lucide-react";
+import { RefreshingStatus } from "../../ui/refreshing";
 
 type RequestResponse = BaseResponse & {
   data: RequestItem;
@@ -31,7 +32,10 @@ export function RequestView() {
 
   return (
     <div className="flex flex-col gap-2.5 w-full">
-      <h2 className="text-zinc-950 text-2xl font-bold">Запит #{request.id}</h2>
+      <div className="flex items-center gap-5">
+        <h2 className="text-zinc-950 text-2xl font-bold">Запит #{request.id}</h2>
+        <RefreshingStatus queryKey={["get-one-request", id]}/>
+      </div>
       <RequestListItem caption="Контактний номер:" content={request.contactNumber}/>
       <RequestListItem caption="Створено:" content={formatDate(request.createdAt)}/>
       <RequestListItem caption="Статус:" content={<ChangeStatus id={request.id} isResolved={request.isResolved} refetch={refetch}/>}/>

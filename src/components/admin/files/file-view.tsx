@@ -11,6 +11,7 @@ import { Button } from "../../ui/button";
 import { Loader2, X as XIcon } from "lucide-react";
 import { useCustomToast } from "../../../hooks/use-custom-toast";
 import { Dialog } from "../../ui/dialog";
+import { RefreshingStatus } from "../../ui/refreshing";
 
 type FileResponse = BaseResponse & {
   data: FileItem;
@@ -38,7 +39,10 @@ export function FileView() {
 
   return(
     <div className="flex flex-col gap-2.5 w-full">
-      <p className="text-zinc-950 text-xl font-bold">{file.name}</p>
+      <div className="flex gap-5 items-center">
+        <p className="text-zinc-950 text-xl font-bold">{file.name}</p>
+        <RefreshingStatus queryKey={["get-one-file", id]}/>
+      </div>
       <div className="flex gap-2">
         <p className="font-bold text-zinc-950">Створено:</p>
         <p className="text-zinc-950">{formatDate(file.createdAt)}</p>

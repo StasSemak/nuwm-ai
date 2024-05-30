@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { ErrorMessage } from "../../ui/error-message";
 import { LoadingSpinner } from "../../ui/loading-spinner";
 import { FileCard } from "../files/files-list";
+import { RefreshingStatus } from "../../ui/refreshing";
 
 type CategoryResponse = BaseResponse & {
   data: CategoryItem;
@@ -25,10 +26,13 @@ export function CategoryView() {
 
   return(
     <div className="flex flex-col gap-4 w-full">
-      <p className="text-zinc-950 text-xl">
-        Категорія
-        <span className="ml-2 font-bold">{data.data.name}</span>
-      </p>
+      <div className="flex w-full items-center justify-between">
+        <p className="text-zinc-950 text-xl">
+          Категорія
+          <span className="ml-2 font-bold">{data.data.name}</span>
+        </p>
+        <RefreshingStatus queryKey={["get-files-by-category", data.data.id]}/>
+      </div>
       <FilesList categoryId={data.data.id} />
     </div>
   )
