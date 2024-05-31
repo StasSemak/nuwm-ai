@@ -5,6 +5,7 @@ import { ErrorMessage } from "../../ui/error-message";
 import { LoadingSpinner } from "../../ui/loading-spinner";
 import { FileCard } from "../files/files-list";
 import { RefreshingStatus } from "../../ui/refreshing";
+import { NotFound } from "../../ui/not-found";
 
 type CategoryResponse = BaseResponse & {
   data: CategoryItem;
@@ -23,6 +24,7 @@ export function CategoryView() {
 
   if(isLoading) return <LoadingSpinner />;
   if(isError || !data || data.error) return <ErrorMessage />;
+  if(!data.data) return <NotFound page="category"/>;
 
   return(
     <div className="flex flex-col gap-4 w-full">

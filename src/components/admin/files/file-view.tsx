@@ -12,6 +12,7 @@ import { Loader2, X as XIcon } from "lucide-react";
 import { useCustomToast } from "../../../hooks/use-custom-toast";
 import { Dialog } from "../../ui/dialog";
 import { RefreshingStatus } from "../../ui/refreshing";
+import { NotFound } from "../../ui/not-found";
 
 type FileResponse = BaseResponse & {
   data: FileItem;
@@ -34,6 +35,7 @@ export function FileView() {
 
   if(isLoading) return <LoadingSpinner />;
   if(isError || !data || data.error) return <ErrorMessage />;
+  if(!data.data) return <NotFound page="file"/>;
 
   const { data: file } = data
 

@@ -9,6 +9,7 @@ import { Dialog } from "../../ui/dialog";
 import { useCustomToast } from "../../../hooks/use-custom-toast";
 import { Loader2, Pen } from "lucide-react";
 import { RefreshingStatus } from "../../ui/refreshing";
+import { NotFound } from "../../ui/not-found";
 
 type RequestResponse = BaseResponse & {
   data: RequestItem;
@@ -27,6 +28,7 @@ export function RequestView() {
 
   if (isLoading) return <LoadingSpinner />;
   if (isError || !data || data.error) return <ErrorMessage />;
+  if (!data.data) return <NotFound page="request"/>;
 
   const { data: request } = data;
 
