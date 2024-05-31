@@ -7,6 +7,7 @@ import { useState } from "react";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { Dialog } from "./ui/dialog";
+import { useNavigate } from "react-router-dom";
 
 type TokenResponse = BaseResponse & {
   data: {
@@ -25,6 +26,7 @@ type LoginResponse = BaseResponse & {
 
 export function AuthGuard({ children }: { children: React.ReactNode }) {
   const [cookies] = useCookies(["authToken"]);
+  const navigate = useNavigate();
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ["token"],
@@ -40,7 +42,7 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
   if (isLoading) return <LoadingSpinner />;
   if (isError) return <ErrorMessage />;
 
-  if (!data || data.error || !data.data.valid) return <LoginForm />;
+  if (!data || data.error || !data.data.valid) navigate("/login");
 
   return <>{children}</>;
 }
@@ -49,6 +51,7 @@ const cookieExpirationTime = 7 * 24 * 60 * 60 * 1000;
 export function LoginForm() {
   const [password, setPassword] = useState<string>("");
   const [_, setCookie] = useCookies(["authToken"]);
+  const navigate = useNavigate();
 
   const { data, isError, isPending, mutate, isSuccess } = useMutation({
     mutationKey: ["login"],
@@ -73,7 +76,7 @@ export function LoginForm() {
     setCookie("authToken", data.data.token, {
       expires: new Date(Date.now() + cookieExpirationTime),
     });
-    window.location.reload();
+    navigate("/admin");
   }
 
   return (
@@ -102,12 +105,13 @@ export function LoginForm() {
 
 export function Logout() {
   const [cookies, _, removeCookie] = useCookies(["authToken"]);
+  const navigate = useNavigate();
 
   function onClick() {
     if (!cookies.authToken) return;
 
     removeCookie("authToken");
-    window.location.reload();
+    navigate("/login");
   }
 
   return( 

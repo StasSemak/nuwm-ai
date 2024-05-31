@@ -7,6 +7,7 @@ import { Admin, AdminCategories, AdminCategory, AdminFile, AdminFiles, AdminHist
 import { AdminLayout } from "./routes/layout";
 import { Toaster } from "react-hot-toast";
 import { NotFound } from "./routes/not-found";
+import { Login } from "./routes/login";
 
 const queryClient = new QueryClient();
 
@@ -15,6 +16,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     <BrowserRouter>
       <Routes>
         <Route index path="/" element={<Index />} />
+        <Route path="/login" element={<Login />}/>
         <Route path="/admin/" element={<AdminLayout/>}>
           <Route index element={<Admin />} />
           <Route path="files" element={<Outlet />}>
