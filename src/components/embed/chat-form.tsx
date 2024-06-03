@@ -101,7 +101,7 @@ export function ChatForm() {
           }
           <Button
             type="submit"
-            disabled={chatQuestion.question === ""}
+            disabled={chatQuestion.question === "" || isPending}
             className="disabled:select-none px-3 md:px-4"
             aria-label="Запитати"
           >
