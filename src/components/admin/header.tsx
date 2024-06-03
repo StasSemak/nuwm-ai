@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { Logout } from "../auth-guard";
+import { Logout } from "../auth/logout";
 import { cn } from "../../lib/utils";
 
 type HeaderNavItem = {

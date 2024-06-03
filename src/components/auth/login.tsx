@@ -1,30 +1,11 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { LoadingSpinner } from "./ui/loading-spinner";
-import { ErrorMessage } from "./ui/error-message";
 import { useRef, useState } from "react";
-import { Input } from "./ui/input";
-import { Button } from "./ui/button";
-import { Dialog } from "./ui/dialog";
 import { useNavigate } from "react-router-dom";
+import { useCustomToast } from "../../hooks/use-custom-toast";
+import { useMutation } from "@tanstack/react-query";
+import { login } from "../../lib/auth";
+import { Input } from "../ui/input";
+import { Button } from "../ui/button";
 import { Loader2 } from "lucide-react";
-import { useCustomToast } from "../hooks/use-custom-toast";
-import { getSession, login, logout } from "../lib/auth";
-
-export function AuthGuard({ children }: { children: React.ReactNode }) {
-  const navigate = useNavigate();
-
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ["token"],
-    queryFn: getSession,
-  });
-
-  if (isLoading) return <LoadingSpinner />;
-  if (isError) return <ErrorMessage />;
-
-  if (!data) navigate("/login");
-
-  return <>{children}</>;
-}
 
 export function LoginForm() {
   const [username, setUsername] = useState<string>("ADMIN");
@@ -45,7 +26,7 @@ export function LoginForm() {
         content: "Невірний логін чи пароль!",
       });
       setPassword("");
-      if(passwordInputRef.current) passwordInputRef.current.value = "";
+      if (passwordInputRef.current) passwordInputRef.current.value = "";
     },
   });
 
@@ -93,22 +74,4 @@ export function LoginForm() {
       </form>
     </div>
   );
-}
-
-export function Logout() {
-  const navigate = useNavigate();
-
-  function onClick() {
-    logout();
-    navigate("/login");
-  }
-
-  return( 
-    <Dialog 
-      trigger={<Button>Вийти</Button>}
-      title={"Вийти з адмінпанелі?"}
-      description={"Ви впевнені? Для повторного доступу потрібно буде знову ввести пароль"}
-      onActionClick={onClick}
-    />
-  )
 }

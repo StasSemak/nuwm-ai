@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom";
-import { AuthGuard } from "../components/auth-guard";
+import { AuthGuard } from "../components/auth/auth-guard";
 import { AdminHeader } from "../components/admin/header";
 
 export function AdminLayout() {

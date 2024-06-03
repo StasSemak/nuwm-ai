@@ -1,4 +1,4 @@
-import { LoginForm } from "../components/auth-guard";
+import { LoginForm } from "../components/auth/login";
 
 export function Login() {
   return (
