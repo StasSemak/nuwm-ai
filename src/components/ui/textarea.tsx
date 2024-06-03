@@ -14,6 +14,7 @@ const TextArea = React.forwardRef<HTMLTextAreaElement, TextAreaProps>(
           className
         )}
         ref={ref}
+        maxRows={10}
         {...props}
       />
     );
