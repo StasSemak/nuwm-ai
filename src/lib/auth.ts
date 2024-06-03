@@ -17,8 +17,10 @@ type LoginResponse = BaseResponse & {
   };
 };
 
+const SESSION_TOKEN_COOKIE_NAME = "sessionToken";
+
 export async function getSession() {
-  const authToken = getCookieValue("__Secure-sessionToken");
+  const authToken = getCookieValue(SESSION_TOKEN_COOKIE_NAME);
 
   const { data } = await http.post<SessionResponse>("/users/session", {
     token: `${authToken}`,
@@ -28,7 +30,7 @@ export async function getSession() {
     throw new Error(data.message);
   }
 
-  return data;
+  return data.data;
 }
 
 export async function login(payload: LoginPayload) {
@@ -38,13 +40,13 @@ export async function login(payload: LoginPayload) {
     throw new Error(data.message);
   }
 
-  setCookie("__Secure-sessionToken", data.data.token, 7);
+  setCookie(SESSION_TOKEN_COOKIE_NAME, data.data.token, 7);
 }
 
 export function logout() {
-  const authToken = getCookieValue("__Secure-sessionToken");
+  const authToken = getCookieValue(SESSION_TOKEN_COOKIE_NAME);
   
   if(authToken) {
-    removeCookie("__Secure-sessionToken");
+    removeCookie(SESSION_TOKEN_COOKIE_NAME);
   }
 }
